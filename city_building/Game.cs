@@ -13,16 +13,17 @@ namespace city_building
 	public partial class Game : Form
 	{
 		MainMenu _m;
-		public int velicina = 25; // veličina mape
+		public int velicina; // veličina mape
 		public double[] vrste = { 0.2, 0.1, 0.02 }; // šuma, stijena, željezo
 		
 		public Game(MainMenu m)
 		{
 			InitializeComponent();
+			_m = m;
+			velicina = _m.o.GetMapSize();
 			// run initialize drawing
 			InitializeDrawing();
 
-			_m = m;
 		}
 
 		// on destruction show _m

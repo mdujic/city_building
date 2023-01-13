@@ -13,11 +13,18 @@ namespace city_building
 	public partial class Options : Form
 	{
 		private System.Media.SoundPlayer _sound;
+		private int MapSize = 25;
 
 		// function to return SoundBtn text
 		public string SoundBtnText()
 		{
 			return SoundBtn.Text;
+		}
+
+		// get map size
+		public int GetMapSize()
+		{
+			return MapSize;
 		}
 
 		public Options(System.Media.SoundPlayer sound)
@@ -67,6 +74,11 @@ namespace city_building
 		{
 			// change color back to original light gray
 			SaveBtn.BackColor = Color.LightGray;
+		}
+
+		private void MapSizeNumeric_ValueChanged(object sender, EventArgs e)
+		{
+			MapSize = (int)MapSizeNumeric.Value;
 		}
 	}
 }
