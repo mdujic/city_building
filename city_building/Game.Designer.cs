@@ -112,7 +112,7 @@
 			// AddWorkerBtn
 			// 
 			this.AddWorkerBtn.Font = new System.Drawing.Font("Showcard Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.AddWorkerBtn.Location = new System.Drawing.Point(12, 252);
+			this.AddWorkerBtn.Location = new System.Drawing.Point(12, 244);
 			this.AddWorkerBtn.Name = "AddWorkerBtn";
 			this.AddWorkerBtn.Size = new System.Drawing.Size(152, 41);
 			this.AddWorkerBtn.TabIndex = 4;
@@ -143,21 +143,21 @@
 			// 
 			this.NoSoldiersLbl.AutoSize = true;
 			this.NoSoldiersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.NoSoldiersLbl.Location = new System.Drawing.Point(81, 90);
+			this.NoSoldiersLbl.Location = new System.Drawing.Point(60, 88);
 			this.NoSoldiersLbl.Name = "NoSoldiersLbl";
-			this.NoSoldiersLbl.Size = new System.Drawing.Size(24, 26);
+			this.NoSoldiersLbl.Size = new System.Drawing.Size(45, 26);
 			this.NoSoldiersLbl.TabIndex = 7;
-			this.NoSoldiersLbl.Text = "0";
+			this.NoSoldiersLbl.Text = "0/0";
 			// 
 			// NoWorkersLbl
 			// 
 			this.NoWorkersLbl.AutoSize = true;
 			this.NoWorkersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.NoWorkersLbl.Location = new System.Drawing.Point(81, 223);
+			this.NoWorkersLbl.Location = new System.Drawing.Point(60, 215);
 			this.NoWorkersLbl.Name = "NoWorkersLbl";
-			this.NoWorkersLbl.Size = new System.Drawing.Size(24, 26);
+			this.NoWorkersLbl.Size = new System.Drawing.Size(61, 26);
 			this.NoWorkersLbl.TabIndex = 8;
-			this.NoWorkersLbl.Text = "0";
+			this.NoWorkersLbl.Text = "10/10";
 			// 
 			// ChooseBuildingLbl
 			// 
@@ -178,6 +178,7 @@
 			this.HouseBtn.Size = new System.Drawing.Size(50, 50);
 			this.HouseBtn.TabIndex = 10;
 			this.HouseBtn.UseVisualStyleBackColor = true;
+			this.HouseBtn.Click += new System.EventHandler(this.HouseBtn_Click);
 			// 
 			// WonderBtn
 			// 
@@ -188,6 +189,7 @@
 			this.WonderBtn.Size = new System.Drawing.Size(50, 50);
 			this.WonderBtn.TabIndex = 11;
 			this.WonderBtn.UseVisualStyleBackColor = true;
+			this.WonderBtn.Click += new System.EventHandler(this.WonderBtn_Click);
 			// 
 			// TowerBtn
 			// 
@@ -198,6 +200,7 @@
 			this.TowerBtn.Size = new System.Drawing.Size(50, 50);
 			this.TowerBtn.TabIndex = 12;
 			this.TowerBtn.UseVisualStyleBackColor = true;
+			this.TowerBtn.Click += new System.EventHandler(this.TowerBtn_Click);
 			// 
 			// BuildingBtn
 			// 
@@ -208,6 +211,7 @@
 			this.BuildingBtn.Size = new System.Drawing.Size(50, 50);
 			this.BuildingBtn.TabIndex = 13;
 			this.BuildingBtn.UseVisualStyleBackColor = true;
+			this.BuildingBtn.Click += new System.EventHandler(this.BuildingBtn_Click);
 			// 
 			// WonderLbl
 			// 
@@ -345,9 +349,9 @@
 			this.WoodCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.WoodCountLbl.Location = new System.Drawing.Point(181, 905);
 			this.WoodCountLbl.Name = "WoodCountLbl";
-			this.WoodCountLbl.Size = new System.Drawing.Size(20, 21);
+			this.WoodCountLbl.Size = new System.Drawing.Size(37, 21);
 			this.WoodCountLbl.TabIndex = 28;
-			this.WoodCountLbl.Text = "0";
+			this.WoodCountLbl.Text = "100";
 			// 
 			// StoneCountLbl
 			// 
@@ -355,9 +359,9 @@
 			this.StoneCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.StoneCountLbl.Location = new System.Drawing.Point(257, 905);
 			this.StoneCountLbl.Name = "StoneCountLbl";
-			this.StoneCountLbl.Size = new System.Drawing.Size(20, 21);
+			this.StoneCountLbl.Size = new System.Drawing.Size(37, 21);
 			this.StoneCountLbl.TabIndex = 29;
-			this.StoneCountLbl.Text = "0";
+			this.StoneCountLbl.Text = "100";
 			// 
 			// IronCountLbl
 			// 
@@ -365,9 +369,9 @@
 			this.IronCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.IronCountLbl.Location = new System.Drawing.Point(323, 905);
 			this.IronCountLbl.Name = "IronCountLbl";
-			this.IronCountLbl.Size = new System.Drawing.Size(20, 21);
+			this.IronCountLbl.Size = new System.Drawing.Size(37, 21);
 			this.IronCountLbl.TabIndex = 30;
-			this.IronCountLbl.Text = "0";
+			this.IronCountLbl.Text = "100";
 			// 
 			// GoldCountLbl
 			// 
@@ -375,9 +379,9 @@
 			this.GoldCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.GoldCountLbl.Location = new System.Drawing.Point(403, 905);
 			this.GoldCountLbl.Name = "GoldCountLbl";
-			this.GoldCountLbl.Size = new System.Drawing.Size(20, 21);
+			this.GoldCountLbl.Size = new System.Drawing.Size(37, 21);
 			this.GoldCountLbl.TabIndex = 31;
-			this.GoldCountLbl.Text = "0";
+			this.GoldCountLbl.Text = "100";
 			// 
 			// Game
 			// 
@@ -421,6 +425,7 @@
 			this.Text = "Game";
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 
 		#endregion

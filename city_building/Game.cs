@@ -17,8 +17,12 @@ namespace city_building
 		MainMenu _m;
 		public int velicina; // veličina mape
         public int time = 0;
+		Button lastClicked = null;
 
-        public Game(MainMenu m)
+		// array of pairs of actions and times to execute after each tick
+		public List<Tuple<Action, int>> actions = new List<Tuple<Action, int>>();
+
+		public Game(MainMenu m)
 
         {
             InitializeComponent();
@@ -132,11 +136,19 @@ namespace city_building
                     button.FlatStyle = FlatStyle.Flat;
                     button.Margin = new Padding(0);
 
-                    //button.FlatAppearance.BorderSize = 0;
-                    // dodaj interaktivnost
-                    // button.Click += b_Click;
+					// click event for the button
+					button.Click += (sender, e) =>
+					{
+						// remember lastClicked button
+						var b = (Button)sender;
+						lastClicked = b;
+					};
 
-                    panel.Controls.Add(button, y, x);
+					//button.FlatAppearance.BorderSize = 0;
+					// dodaj interaktivnost
+					// button.Click += b_Click;
+
+					panel.Controls.Add(button, y, x);
 
                 }
             }
@@ -144,6 +156,7 @@ namespace city_building
             this.Controls.Add(panel);
             OutsidePanel.Controls.Add(panel);
         }
+        
 
         private void ReturnBtn_Click(object sender, EventArgs e)
 		{
@@ -176,7 +189,133 @@ namespace city_building
 			int seconds = time % 60;
 			// update label
 			TimeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
-			
+
+			var newActions = new List<Tuple<Action, int>>();
+			// iterate through each element in tickActions
+			foreach (var action in actions)
+			{
+				// extract action and time from the tuple
+				var a = action.Item1;
+				var t = action.Item2;
+
+				if (t == 0)
+				{
+					// execute the action
+					a();
+					break;
+				}
+				else
+				{
+					newActions.Add(new Tuple<Action, int>(a, t - 1));
+				}
+			}
+			actions = newActions;
+
+		}
+
+		private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
+		{
+			// get number of each resource (wood, stone, iron)
+			int wood = Convert.ToInt32(WoodCountLbl.Text);
+			int stone = Convert.ToInt32(StoneCountLbl.Text);
+			int iron = Convert.ToInt32(IronCountLbl.Text);
+			int gold = Convert.ToInt32(GoldCountLbl.Text);
+
+			// get number of workers in format available/total
+			string[] workers = NoWorkersLbl.Text.Split('/');
+
+			// get number of workers available
+			int workersAvailable = Convert.ToInt32(workers[0]);
+
+			// get number of workers total
+			int workersTotal = Convert.ToInt32(workers[1]);
+
+
+			// if there is no lastClicked button, show message
+			if (lastClicked == null)
+			{
+				// check if clicked button is field
+				MessageBox.Show("Please select a tile first!");
+			}
+			else if (lastClicked.BackColor == Color.LightGreen)
+			{
+				// check if there is enough resources
+				if (wood >= resources && stone >= resources && iron >= resources && gold >= price)
+				{
+					// check if there is enough available workers
+					if (workersAvailable >= workersNecessary)
+					{
+						// subtract resources
+						wood -= resources;
+						stone -= resources;
+						iron -= resources;
+						gold -= resources;
+
+						// subtract workers
+						workersAvailable -= workersNecessary;
+
+						// update labels
+						WoodCountLbl.Text = wood.ToString();
+						StoneCountLbl.Text = stone.ToString();
+						IronCountLbl.Text = iron.ToString();
+						GoldCountLbl.Text = gold.ToString();
+						NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+
+						// change button image to construction
+						lastClicked.BackgroundImage = Properties.Resources.construction;
+						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
+
+
+
+						// add action to tickActions
+						actions.Add(new Tuple<Action, int>(() =>
+						{
+							workersAvailable += workersNecessary;
+
+							// update labels
+							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+
+							// change button to image from HouseBtn
+							lastClicked.BackgroundImage = sender.BackgroundImage;
+							lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
+							lastClicked.BackColor = Color.Transparent;
+						}, seconds));
+
+					}
+					else
+					{
+						MessageBox.Show("Not enough workers available!");
+					}
+				}
+				else
+				{
+					MessageBox.Show("Not enough resources!");
+				}
+			}
+			else
+			{
+				MessageBox.Show("You can't build here!");
+			}
+		}
+
+		private void HouseBtn_Click(object sender, EventArgs e)
+		{
+			Build((Button)sender, 10, 0, 10, 5);
+		}
+
+		private void BuildingBtn_Click(object sender, EventArgs e)
+		{
+			Build((Button)sender, 20, 0, 20, 10);
+		}
+
+		private void TowerBtn_Click(object sender, EventArgs e)
+		{
+			Build((Button)sender, 30, 0, 30, 15);
+		}
+
+		private void WonderBtn_Click(object sender, EventArgs e)
+		{
+			Build((Button)sender, 100, 100, 100, 100);
 		}
 	}
 }

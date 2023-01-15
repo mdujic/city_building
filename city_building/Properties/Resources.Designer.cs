@@ -73,6 +73,16 @@ namespace city_building.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap construction {
+            get {
+                object obj = ResourceManager.GetObject("construction", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap gold {
             get {
                 object obj = ResourceManager.GetObject("gold", resourceCulture);
