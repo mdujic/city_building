@@ -85,11 +85,15 @@
 			this.Text = "Game";
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
-
 		}
 
 		#endregion
 
 		private Button ReturnBtn;
+
+		public System.Windows.Forms.Timer GameTimer;
+		public Label TimeLabel;
+		private Panel OutsidePanel;
+	}
+
 }
