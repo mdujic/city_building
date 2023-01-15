@@ -91,8 +91,6 @@
 
 		private Button ReturnBtn;
 
-    }
-
 		public System.Windows.Forms.Timer GameTimer;
 		public Label TimeLabel;
 		private Panel OutsidePanel;
