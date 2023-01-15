@@ -18,6 +18,7 @@ namespace city_building
 		public int velicina; // veličina mape
 		public double[] vrste = { 0.2, 0.1, 0.02 }; // šuma, stijena, željezo
 
+
         void GenerateMap()
         {
 			Perlin perlin = new Perlin();
@@ -138,6 +139,11 @@ namespace city_building
         }
 
         public Game(MainMenu m)
+
+		public int time = 0;
+		
+		public Game(MainMenu m)
+
 		{
 			InitializeComponent();
 			_m = m;
@@ -221,7 +227,10 @@ namespace city_building
 				}
 			}
 			panel.Dock = DockStyle.Fill;
-			this.Controls.Add(panel);
+
+			// add panel to OutsidePanel
+			OutsidePanel.Controls.Add(panel);
+			//this.Controls.Add(panel);
 		}
 
         public void NacrtajPerlinPlocu(int[,] ploca)
@@ -347,6 +356,17 @@ namespace city_building
 			// ovdje bismo trebali imati popunjenu ploču, sada na formu dodajemo gumbe s
 			// određenim vrstama polja
 			NacrtajPlocu(ploca);
+		}
+
+		private void GameTimer_Tick(object sender, EventArgs e)
+		{
+			time++;
+			// convert time to minutes and seconds
+			int minutes = time / 60;
+			int seconds = time % 60;
+			// update label
+			TimeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
+			
 		}
 	}
 }
