@@ -317,5 +317,51 @@ namespace city_building
 		{
 			Build((Button)sender, 100, 100, 100, 100);
 		}
+
+		private void AddSoldierBtn_Click(object sender, EventArgs e)
+		{
+			// one soldier needs one worker and 10 gold
+			// get number of workers in format available/total
+			string[] workers = NoWorkersLbl.Text.Split('/');
+			// get number of workers available
+			int workersAvailable = Convert.ToInt32(workers[0]);
+			// get number of workers total
+			int workersTotal = Convert.ToInt32(workers[1]);
+			// get number of gold
+			int gold = Convert.ToInt32(GoldCountLbl.Text);
+
+			// check if there is enough gold
+			if (gold >= 10)
+			{
+				// check if there is enough available workers
+				if (workersAvailable >= 1)
+				{
+					// subtract gold
+					gold -= 10;
+					// subtract workers
+					workersAvailable -= 1;
+					workersTotal -= 1;
+					// update labels
+					GoldCountLbl.Text = gold.ToString();
+					NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+
+					// get number of soldiers in format
+					int soldiers = Convert.ToInt32(NoSoldiersLbl.Text);
+					
+					// add soldier
+					soldiers++;
+					// update label
+					NoSoldiersLbl.Text = soldiers.ToString();
+				}
+				else
+				{
+					MessageBox.Show("Not enough workers available to convert!");
+				}
+			}
+			else
+			{
+				MessageBox.Show("Not enough gold!");
+			}
+		}
 	}
 }

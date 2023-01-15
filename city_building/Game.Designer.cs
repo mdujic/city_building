@@ -34,7 +34,6 @@
 			this.TimeLabel = new System.Windows.Forms.Label();
 			this.OutsidePanel = new System.Windows.Forms.Panel();
 			this.AddSoldierBtn = new System.Windows.Forms.Button();
-			this.AddWorkerBtn = new System.Windows.Forms.Button();
 			this.SoldiersAvailableLbl = new System.Windows.Forms.Label();
 			this.WorkersAvailableLbl = new System.Windows.Forms.Label();
 			this.NoSoldiersLbl = new System.Windows.Forms.Label();
@@ -102,28 +101,19 @@
 			// AddSoldierBtn
 			// 
 			this.AddSoldierBtn.Font = new System.Drawing.Font("Showcard Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.AddSoldierBtn.Location = new System.Drawing.Point(12, 119);
+			this.AddSoldierBtn.Location = new System.Drawing.Point(12, 229);
 			this.AddSoldierBtn.Name = "AddSoldierBtn";
 			this.AddSoldierBtn.Size = new System.Drawing.Size(152, 41);
 			this.AddSoldierBtn.TabIndex = 3;
 			this.AddSoldierBtn.Text = "Add soldier";
 			this.AddSoldierBtn.UseVisualStyleBackColor = true;
-			// 
-			// AddWorkerBtn
-			// 
-			this.AddWorkerBtn.Font = new System.Drawing.Font("Showcard Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.AddWorkerBtn.Location = new System.Drawing.Point(12, 244);
-			this.AddWorkerBtn.Name = "AddWorkerBtn";
-			this.AddWorkerBtn.Size = new System.Drawing.Size(152, 41);
-			this.AddWorkerBtn.TabIndex = 4;
-			this.AddWorkerBtn.Text = "Add worker";
-			this.AddWorkerBtn.UseVisualStyleBackColor = true;
+			this.AddSoldierBtn.Click += new System.EventHandler(this.AddSoldierBtn_Click);
 			// 
 			// SoldiersAvailableLbl
 			// 
 			this.SoldiersAvailableLbl.AutoSize = true;
 			this.SoldiersAvailableLbl.Font = new System.Drawing.Font("Showcard Gothic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.SoldiersAvailableLbl.Location = new System.Drawing.Point(12, 71);
+			this.SoldiersAvailableLbl.Location = new System.Drawing.Point(12, 181);
 			this.SoldiersAvailableLbl.Name = "SoldiersAvailableLbl";
 			this.SoldiersAvailableLbl.Size = new System.Drawing.Size(144, 17);
 			this.SoldiersAvailableLbl.TabIndex = 5;
@@ -133,7 +123,7 @@
 			// 
 			this.WorkersAvailableLbl.AutoSize = true;
 			this.WorkersAvailableLbl.Font = new System.Drawing.Font("Showcard Gothic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.WorkersAvailableLbl.Location = new System.Drawing.Point(12, 198);
+			this.WorkersAvailableLbl.Location = new System.Drawing.Point(12, 74);
 			this.WorkersAvailableLbl.Name = "WorkersAvailableLbl";
 			this.WorkersAvailableLbl.Size = new System.Drawing.Size(147, 17);
 			this.WorkersAvailableLbl.TabIndex = 6;
@@ -143,17 +133,17 @@
 			// 
 			this.NoSoldiersLbl.AutoSize = true;
 			this.NoSoldiersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.NoSoldiersLbl.Location = new System.Drawing.Point(60, 88);
+			this.NoSoldiersLbl.Location = new System.Drawing.Point(72, 198);
 			this.NoSoldiersLbl.Name = "NoSoldiersLbl";
-			this.NoSoldiersLbl.Size = new System.Drawing.Size(45, 26);
+			this.NoSoldiersLbl.Size = new System.Drawing.Size(24, 26);
 			this.NoSoldiersLbl.TabIndex = 7;
-			this.NoSoldiersLbl.Text = "0/0";
+			this.NoSoldiersLbl.Text = "0";
 			// 
 			// NoWorkersLbl
 			// 
 			this.NoWorkersLbl.AutoSize = true;
 			this.NoWorkersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.NoWorkersLbl.Location = new System.Drawing.Point(60, 215);
+			this.NoWorkersLbl.Location = new System.Drawing.Point(60, 91);
 			this.NoWorkersLbl.Name = "NoWorkersLbl";
 			this.NoWorkersLbl.Size = new System.Drawing.Size(61, 26);
 			this.NoWorkersLbl.TabIndex = 8;
@@ -415,7 +405,6 @@
 			this.Controls.Add(this.NoSoldiersLbl);
 			this.Controls.Add(this.WorkersAvailableLbl);
 			this.Controls.Add(this.SoldiersAvailableLbl);
-			this.Controls.Add(this.AddWorkerBtn);
 			this.Controls.Add(this.AddSoldierBtn);
 			this.Controls.Add(this.OutsidePanel);
 			this.Controls.Add(this.TimeLabel);
@@ -436,7 +425,6 @@
 		public Label TimeLabel;
 		private Panel OutsidePanel;
 		private Button AddSoldierBtn;
-		private Button AddWorkerBtn;
 		private Label SoldiersAvailableLbl;
 		private Label WorkersAvailableLbl;
 		private Label NoSoldiersLbl;
