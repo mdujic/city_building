@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Numerics;
+using System.Windows.Forms.VisualStyles;
 
 namespace city_building
 {
@@ -15,15 +17,134 @@ namespace city_building
 		MainMenu _m;
 		public int velicina; // veličina mape
 		public double[] vrste = { 0.2, 0.1, 0.02 }; // šuma, stijena, željezo
-		
-		public Game(MainMenu m)
+
+        void GenerateMap()
+        {
+			Perlin perlin = new Perlin();
+
+            var panel = new TableLayoutPanel();
+            panel.RowCount = velicina;
+            panel.ColumnCount = velicina;
+            //panel.BackColor = Color.Black;
+
+            // postavi jednaku veličinu redova i stupaca
+            for (int i = 0; i < velicina; ++i)
+            {
+                var postotak = 100d / velicina;
+                panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, (float)postotak));
+                panel.RowStyles.Add(new RowStyle(SizeType.Percent, (float)postotak));
+            }
+
+            // height map
+            double[,] heightMap = perlin.PerlinNoiseMap(velicina,
+				perlin.perlinParameters.heightWaves);
+
+			// heat map
+			double[,] heatMap = perlin.PerlinNoiseMap(velicina,
+				perlin.perlinParameters.heatWaves);
+
+			// decide the biomes based on the maps
+			string[,] biomes = new string[velicina, velicina];
+			int polje = 0, stijena = 0;
+
+			for(int x = 0; x < velicina; ++x)
+			{
+				for (int y = 0; y < velicina; ++y)
+				{
+					biomes[x, y] = perlin.GetBiome(heightMap[x, y], heatMap[x, y]).name;
+					if (biomes[x, y] == "polje") ++polje;
+					if (biomes[x, y] == "stijena") ++stijena;
+                }
+			}
+
+			// add some noise for iron ore
+			// # iron = k% of all grassland tiles
+			int iron = (int) (0.02 * polje);
+            List<int> ironTiles = new List<int>();
+			var random = new Random();
+
+			for(int i = 0; i < iron; ++i)
+			{
+				ironTiles.Add(random.Next(0, polje));
+			}
+			//Ispis.Text = ironTiles[0].ToString();
+			int countGrassland = 0;
+
+            for (int x = 0; x < velicina; ++x)
+			{
+				for(int y = 0; y < velicina; ++y)
+				{
+					if (biomes[x, y] == "polje")
+					{
+						if (ironTiles.IndexOf(countGrassland) != -1) biomes[x, y] = "željezo";
+						countGrassland++;
+					}
+					if (biomes[x, y] == "stijena")
+					{
+						bool dobar = false;
+						if (x > 0 && (biomes[x - 1, y] == "šuma" || biomes[x - 1, y] == "polje"))
+							dobar = true;
+						else if (x < velicina - 1 && (biomes[x + 1, y] == "šuma" || biomes[x + 1, y] == "polje"))
+                            dobar = true;
+                        else if (y < velicina - 1 && (biomes[x, y + 1] == "šuma" || biomes[x, y + 1] == "polje"))
+                            dobar = true;
+                        else if (y > 0 && (biomes[x, y - 1] == "šuma" || biomes[x, y - 1] == "polje"))
+							dobar = true;
+						if (dobar && random.NextDouble() > 0.85) biomes[x, y] = "željezo";
+                    }
+				}
+			}
+
+			// add the buttons to the form
+            for (int x = 0; x < velicina; ++x)
+            {
+                for (int y = 0; y < velicina; ++y)
+                {
+                    var button = new Button();
+                    switch (biomes[x, y])
+                    {
+                        case "voda":
+                            button.BackColor = Color.LightBlue;
+                            break;
+                        case "polje":
+                            button.BackColor = Color.LightGreen;
+                            break;
+                        case "šuma":
+                            button.BackColor = Color.DarkGreen;
+                            break;
+                        case "stijena":
+                            button.BackColor = Color.LightGray;
+                            break;
+						case "željezo":
+                            button.BackColor = Color.DarkGray;
+                            break;
+                    }
+					//button.Text = heightMap[x, y].ToString();
+                    button.Dock = DockStyle.Fill;
+                    button.FlatStyle = FlatStyle.Flat;
+                    button.Margin = new Padding(0);
+
+                    //button.FlatAppearance.BorderSize = 0;
+                    // dodaj interaktivnost
+                    // button.Click += b_Click;
+
+                    panel.Controls.Add(button, y, x);
+
+                }
+
+                panel.Dock = DockStyle.Fill;
+                this.Controls.Add(panel);
+            }
+        }
+
+        public Game(MainMenu m)
 		{
 			InitializeComponent();
 			_m = m;
 			velicina = _m.o.GetMapSize();
 			// run initialize drawing
-			InitializeDrawing();
-
+			//InitializeDrawing();
+			GenerateMap();
 		}
 
 		// on destruction show _m
@@ -61,9 +182,9 @@ namespace city_building
 			// postavi jednaku veličinu redova i stupaca
 			for (int i = 0; i < velicina; ++i)
 			{
-				var postotak = 100f / (float)velicina;
-				panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, postotak));
-				panel.RowStyles.Add(new RowStyle(SizeType.Percent, postotak));
+				var postotak = 100d / velicina;
+				//panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, postotak));
+				//panel.RowStyles.Add(new RowStyle(SizeType.Percent, postotak));
 			}
 
 			// dodaj gumbe
@@ -102,6 +223,60 @@ namespace city_building
 			panel.Dock = DockStyle.Fill;
 			this.Controls.Add(panel);
 		}
+
+        public void NacrtajPerlinPlocu(int[,] ploca)
+        {
+            var panel = new TableLayoutPanel();
+            panel.RowCount = velicina;
+            panel.ColumnCount = velicina;
+            //panel.BackColor = Color.Black;
+
+            // postavi jednaku veličinu redova i stupaca
+            for (int i = 0; i < velicina; ++i)
+            {
+                var postotak = 100d / velicina;
+                //panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, postotak));
+                //panel.RowStyles.Add(new RowStyle(SizeType.Percent, postotak));
+            }
+
+            // dodaj gumbe
+            for (int i = 0; i < velicina; ++i)
+            {
+                for (int j = 0; j < velicina; ++j)
+                {
+                    var button = new Button();
+                    switch (ploca[i, j])
+                    {
+                        case 0:
+                            button.BackColor = Color.Green;
+                            break;
+                        case 1:
+                            button.BackColor = Color.DarkGreen;
+                            break;
+                        case 2:
+                            button.BackColor = Color.Gray;
+                            break;
+                        case 3:
+                            button.BackColor = Color.DarkGray;
+                            break;
+                    }
+
+                    button.Dock = DockStyle.Fill;
+                    button.FlatStyle = FlatStyle.Flat;
+                    button.Margin = new Padding(0);
+
+                    //button.FlatAppearance.BorderSize = 0;
+                    // dodaj interaktivnost
+                    // button.Click += b_Click;
+
+                    panel.Controls.Add(button, j, i);
+                }
+            }
+            panel.Dock = DockStyle.Fill;
+            this.Controls.Add(panel);
+        }
+
+        
 
 		private void InitializeDrawing()
 		{
