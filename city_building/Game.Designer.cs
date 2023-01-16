@@ -145,9 +145,9 @@
 			this.NoWorkersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.NoWorkersLbl.Location = new System.Drawing.Point(60, 91);
 			this.NoWorkersLbl.Name = "NoWorkersLbl";
-			this.NoWorkersLbl.Size = new System.Drawing.Size(61, 26);
+			this.NoWorkersLbl.Size = new System.Drawing.Size(63, 26);
 			this.NoWorkersLbl.TabIndex = 8;
-			this.NoWorkersLbl.Text = "10/10";
+			this.NoWorkersLbl.Text = "20/20";
 			// 
 			// ChooseBuildingLbl
 			// 

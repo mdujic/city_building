@@ -58,6 +58,7 @@ namespace city_building
 			AddIronNoise(biomes);
 			
 			AddMapButtons(biomes);
+			
         }
 
 		void AddIronNoise(string[,] biomes)
@@ -106,7 +107,7 @@ namespace city_building
                 panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, (float)postotak));
                 panel.RowStyles.Add(new RowStyle(SizeType.Percent, (float)postotak));
             }
-
+			
             // add the buttons to the panel
             for (int x = 0; x < velicina; ++x)
             {
@@ -202,7 +203,6 @@ namespace city_building
 				{
 					// execute the action
 					a();
-					break;
 				}
 				else
 				{
@@ -211,6 +211,8 @@ namespace city_building
 			}
 			actions = newActions;
 
+			// TODO: each building raises number of available workers
+			// TODO: each tower produces some amount of gold
 		}
 
 		private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
@@ -245,6 +247,7 @@ namespace city_building
 					// check if there is enough available workers
 					if (workersAvailable >= workersNecessary)
 					{
+						
 						// subtract resources
 						wood -= resources;
 						stone -= resources;
@@ -266,19 +269,24 @@ namespace city_building
 						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
 
 
-
+						var b = lastClicked;
 						// add action to tickActions
 						actions.Add(new Tuple<Action, int>(() =>
 						{
+							// get workersAvailable and workersTotal
+							string[] workers = NoWorkersLbl.Text.Split('/');
+							int workersAvailable = Convert.ToInt32(workers[0]);
+							int workersTotal = Convert.ToInt32(workers[1]);
+
 							workersAvailable += workersNecessary;
 
 							// update labels
 							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 
 							// change button to image from HouseBtn
-							lastClicked.BackgroundImage = sender.BackgroundImage;
-							lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
-							lastClicked.BackColor = Color.Transparent;
+							b.BackgroundImage = sender.BackgroundImage;
+							b.BackgroundImageLayout = ImageLayout.Zoom;
+							b.BackColor = Color.Transparent;
 						}, seconds));
 
 					}
@@ -387,11 +395,6 @@ namespace city_building
 					// check if clicked button is appropriate to gather resources
 					if (lastClicked.BackColor != Color.Transparent && ValidateHarvestMine(sender) )
 					{
-						// get number of each resource
-						int wood = Convert.ToInt32(WoodCountLbl.Text);
-						int stone = Convert.ToInt32(StoneCountLbl.Text);
-						int iron = Convert.ToInt32(IronCountLbl.Text);
-						int gold = Convert.ToInt32(GoldCountLbl.Text);
 
 						// change number of workers
 						// get number of workers in format available/total
@@ -410,10 +413,24 @@ namespace city_building
 						
 						// update labels
 						NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
-
+						var b = lastClicked;
 						actions.Add(new Tuple<Action, int>(() =>
 						{
+							// get workersAvailable and workersTotal
+							// get number of workers in format available/total
+							string[] workers = NoWorkersLbl.Text.Split('/');
+							// get number of workers available
+							int workersAvailable = Convert.ToInt32(workers[0]);
+							// get number of workers total
+							int workersTotal = Convert.ToInt32(workers[1]);
+							
+							// get number of each resource
+							int wood = Convert.ToInt32(WoodCountLbl.Text);
+							int stone = Convert.ToInt32(StoneCountLbl.Text);
+							int iron = Convert.ToInt32(IronCountLbl.Text);
+							int gold = Convert.ToInt32(GoldCountLbl.Text);
 							workersAvailable++;
+
 
 							// add 10 item of resource from source
 							switch (sender.Name)
@@ -445,8 +462,8 @@ namespace city_building
 							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 
 							// change button color back to before
-							lastClicked.BackgroundImage = null;
-							lastClicked.BackColor = BackColorBefore;
+							b.BackgroundImage = null;
+							b.BackColor = BackColorBefore;
 						}, seconds));
 					}
 					else
