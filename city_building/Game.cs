@@ -363,5 +363,121 @@ namespace city_building
 				MessageBox.Show("Not enough gold!");
 			}
 		}
+		
+		// function to check if we are harvesting/mining from valid place
+		// if sender.Tag == "wood", lastClicked.BackColor must be Color.DarkGreen ...
+		private bool ValidateHarvestMine(Button sender)
+		{
+			bool check = sender.Tag == "wood" && lastClicked.BackColor == Color.DarkGreen;
+			check = check || sender.Tag == "stone" && lastClicked.BackColor == Color.LightGray;
+			check = check || sender.Tag == "iron" && lastClicked.BackColor == Color.DarkGray;
+
+			return check;
+		}
+
+		// function which sends workers to gather resources
+		private void HarvestMine(Button sender, int seconds)
+		{
+			// check if there is at least one worker
+			if (Convert.ToInt32(NoWorkersLbl.Text.Split('/')[0]) > 0)
+			{
+				// check if there is no lastClicked button
+				if (lastClicked != null)
+				{
+					// check if clicked button is appropriate to gather resources
+					if (lastClicked.BackColor != Color.Transparent && ValidateHarvestMine(sender) )
+					{
+						// get number of each resource
+						int wood = Convert.ToInt32(WoodCountLbl.Text);
+						int stone = Convert.ToInt32(StoneCountLbl.Text);
+						int iron = Convert.ToInt32(IronCountLbl.Text);
+						int gold = Convert.ToInt32(GoldCountLbl.Text);
+
+						// change number of workers
+						// get number of workers in format available/total
+						string[] workers = NoWorkersLbl.Text.Split('/');
+						// get number of workers available
+						int workersAvailable = Convert.ToInt32(workers[0]);
+						// get number of workers total
+						int workersTotal = Convert.ToInt32(workers[1]);
+
+						// set
+						workersAvailable--;
+
+						var BackColorBefore = lastClicked.BackColor;
+						lastClicked.BackgroundImage = Properties.Resources.worker;
+						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
+						
+						// update labels
+						NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+
+						actions.Add(new Tuple<Action, int>(() =>
+						{
+							workersAvailable++;
+
+							// add 10 item of resource from source
+							switch (sender.Name)
+							{
+								case "WoodBtn":
+									wood += 10;
+									// update label WoodCountLbl
+									WoodCountLbl.Text = wood.ToString();
+									break;
+								case "StoneBtn":
+									stone += 10;
+									// update label StoneCountLbl
+									StoneCountLbl.Text = stone.ToString();
+									break;
+								case "IronBtn":
+									iron += 10;
+									// update label IronCountLbl
+									IronCountLbl.Text = iron.ToString();
+									break;
+								case "GoldBtn":
+									gold += 10;
+									// update label GoldCountLbl
+									GoldCountLbl.Text = gold.ToString();
+									break;
+							}
+							
+
+							// update labels
+							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+
+							// change button color back to before
+							lastClicked.BackgroundImage = null;
+							lastClicked.BackColor = BackColorBefore;
+						}, seconds));
+					}
+					else
+					{
+						MessageBox.Show("You can't gather this resource from that tile!");
+					}
+				}
+				else
+				{
+					MessageBox.Show("Please select tile first!");
+				}
+			}
+			else
+			{
+				MessageBox.Show("Not enough workers available!");
+			}
+		}
+
+		private void WoodBtn_Click(object sender, EventArgs e)
+		{
+			HarvestMine((Button)sender, 5);
+		}
+
+		private void StoneBtn_Click(object sender, EventArgs e)
+		{
+			HarvestMine((Button)sender, 10);
+		}
+
+		private void IronBtn_Click(object sender, EventArgs e)
+		{
+			HarvestMine((Button)sender, 15);
+		}
 	}
 }

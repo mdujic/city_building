@@ -261,7 +261,9 @@
 			this.WoodBtn.Name = "WoodBtn";
 			this.WoodBtn.Size = new System.Drawing.Size(50, 50);
 			this.WoodBtn.TabIndex = 19;
+			this.WoodBtn.Tag = "wood";
 			this.WoodBtn.UseVisualStyleBackColor = true;
+			this.WoodBtn.Click += new System.EventHandler(this.WoodBtn_Click);
 			// 
 			// StoneBtn
 			// 
@@ -271,7 +273,9 @@
 			this.StoneBtn.Name = "StoneBtn";
 			this.StoneBtn.Size = new System.Drawing.Size(50, 50);
 			this.StoneBtn.TabIndex = 20;
+			this.StoneBtn.Tag = "stone";
 			this.StoneBtn.UseVisualStyleBackColor = true;
+			this.StoneBtn.Click += new System.EventHandler(this.StoneBtn_Click);
 			// 
 			// IronBtn
 			// 
@@ -281,7 +285,9 @@
 			this.IronBtn.Name = "IronBtn";
 			this.IronBtn.Size = new System.Drawing.Size(50, 50);
 			this.IronBtn.TabIndex = 21;
+			this.IronBtn.Tag = "iron";
 			this.IronBtn.UseVisualStyleBackColor = true;
+			this.IronBtn.Click += new System.EventHandler(this.IronBtn_Click);
 			// 
 			// GoldBtn
 			// 
@@ -291,6 +297,7 @@
 			this.GoldBtn.Name = "GoldBtn";
 			this.GoldBtn.Size = new System.Drawing.Size(50, 50);
 			this.GoldBtn.TabIndex = 23;
+			this.GoldBtn.Tag = "gold";
 			this.GoldBtn.UseVisualStyleBackColor = true;
 			// 
 			// GoldLbl
