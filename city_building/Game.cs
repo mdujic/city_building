@@ -335,17 +335,21 @@ namespace city_building
 			int workersAvailable = Convert.ToInt32(workers[0]);
 			// get number of workers total
 			int workersTotal = Convert.ToInt32(workers[1]);
+			// get number of iron
+			int iron = Convert.ToInt32(IronCountLbl.Text);
 			// get number of gold
 			int gold = Convert.ToInt32(GoldCountLbl.Text);
 
-			// check if there is enough gold
-			if (gold >= 10)
+			// check if there is enough gold and iron
+			if (gold >= 10 && iron >= 10)
 			{
 				// check if there is enough available workers
 				if (workersAvailable >= 1)
 				{
 					// subtract gold
 					gold -= 10;
+					// subtract iron
+					iron -= 10;
 					// subtract workers
 					workersAvailable -= 1;
 					workersTotal -= 1;
@@ -368,7 +372,7 @@ namespace city_building
 			}
 			else
 			{
-				MessageBox.Show("Not enough gold!");
+				MessageBox.Show("Not enough resources!");
 			}
 		}
 		
@@ -495,6 +499,25 @@ namespace city_building
 		private void IronBtn_Click(object sender, EventArgs e)
 		{
 			HarvestMine((Button)sender, 15);
+		}
+
+		private void ImmobilizeSoldierBtn_Click(object sender, EventArgs e)
+		{
+			// return soldier back to workers
+			int noSoldiers = Convert.ToInt32(NoSoldiersLbl.Text);
+			int workersAvailable = Convert.ToInt32(NoWorkersLbl.Text.Split('/')[0]);
+			int workersTotal = Convert.ToInt32(NoWorkersLbl.Text.Split('/')[1]);
+			// check if there is at least one soldier
+			if (noSoldiers > 0)
+			{
+				// update labels
+				NoSoldiersLbl.Text = (noSoldiers - 1).ToString();
+				NoWorkersLbl.Text = (workersAvailable + 1).ToString() + "/" + (workersTotal + 1).ToString();
+			}
+			else
+			{
+				MessageBox.Show("You have no soldiers to immobilize!");
+			}
 		}
 	}
 }

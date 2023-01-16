@@ -60,6 +60,7 @@
 			this.StoneCountLbl = new System.Windows.Forms.Label();
 			this.IronCountLbl = new System.Windows.Forms.Label();
 			this.GoldCountLbl = new System.Windows.Forms.Label();
+			this.ImmobilizeSoldierBtn = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// ReturnBtn
@@ -101,9 +102,9 @@
 			// AddSoldierBtn
 			// 
 			this.AddSoldierBtn.Font = new System.Drawing.Font("Showcard Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.AddSoldierBtn.Location = new System.Drawing.Point(12, 229);
+			this.AddSoldierBtn.Location = new System.Drawing.Point(12, 227);
 			this.AddSoldierBtn.Name = "AddSoldierBtn";
-			this.AddSoldierBtn.Size = new System.Drawing.Size(152, 41);
+			this.AddSoldierBtn.Size = new System.Drawing.Size(152, 46);
 			this.AddSoldierBtn.TabIndex = 3;
 			this.AddSoldierBtn.Text = "Add soldier";
 			this.AddSoldierBtn.UseVisualStyleBackColor = true;
@@ -380,12 +381,24 @@
 			this.GoldCountLbl.TabIndex = 31;
 			this.GoldCountLbl.Text = "100";
 			// 
+			// ImmobilizeSoldierBtn
+			// 
+			this.ImmobilizeSoldierBtn.Font = new System.Drawing.Font("Showcard Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.ImmobilizeSoldierBtn.Location = new System.Drawing.Point(12, 279);
+			this.ImmobilizeSoldierBtn.Name = "ImmobilizeSoldierBtn";
+			this.ImmobilizeSoldierBtn.Size = new System.Drawing.Size(152, 46);
+			this.ImmobilizeSoldierBtn.TabIndex = 32;
+			this.ImmobilizeSoldierBtn.Text = "Immobilize soldier";
+			this.ImmobilizeSoldierBtn.UseVisualStyleBackColor = true;
+			this.ImmobilizeSoldierBtn.Click += new System.EventHandler(this.ImmobilizeSoldierBtn_Click);
+			// 
 			// Game
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(982, 953);
 			this.ControlBox = false;
+			this.Controls.Add(this.ImmobilizeSoldierBtn);
 			this.Controls.Add(this.GoldCountLbl);
 			this.Controls.Add(this.IronCountLbl);
 			this.Controls.Add(this.StoneCountLbl);
@@ -458,6 +471,7 @@
 		private Label StoneCountLbl;
 		private Label IronCountLbl;
 		private Label GoldCountLbl;
+		private Button ImmobilizeSoldierBtn;
 	}
 
 }
