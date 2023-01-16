@@ -61,6 +61,7 @@
 			this.IronCountLbl = new System.Windows.Forms.Label();
 			this.GoldCountLbl = new System.Windows.Forms.Label();
 			this.ImmobilizeSoldierBtn = new System.Windows.Forms.Button();
+			this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.SuspendLayout();
 			// 
 			// ReturnBtn
@@ -107,6 +108,7 @@
 			this.AddSoldierBtn.Size = new System.Drawing.Size(152, 46);
 			this.AddSoldierBtn.TabIndex = 3;
 			this.AddSoldierBtn.Text = "Add soldier";
+			this.ToolTip.SetToolTip(this.AddSoldierBtn, "Soldier costs 10 gold and requires 10 iron.");
 			this.AddSoldierBtn.UseVisualStyleBackColor = true;
 			this.AddSoldierBtn.Click += new System.EventHandler(this.AddSoldierBtn_Click);
 			// 
@@ -129,6 +131,7 @@
 			this.WorkersAvailableLbl.Size = new System.Drawing.Size(147, 17);
 			this.WorkersAvailableLbl.TabIndex = 6;
 			this.WorkersAvailableLbl.Text = "Workers available:";
+			this.ToolTip.SetToolTip(this.WorkersAvailableLbl, "Nesto drugo");
 			// 
 			// NoSoldiersLbl
 			// 
@@ -168,6 +171,7 @@
 			this.HouseBtn.Name = "HouseBtn";
 			this.HouseBtn.Size = new System.Drawing.Size(50, 50);
 			this.HouseBtn.TabIndex = 10;
+			this.ToolTip.SetToolTip(this.HouseBtn, "Building of a house requires 10 people, 5 seconds, and 10 of each resource.");
 			this.HouseBtn.UseVisualStyleBackColor = true;
 			this.HouseBtn.Click += new System.EventHandler(this.HouseBtn_Click);
 			// 
@@ -179,6 +183,7 @@
 			this.WonderBtn.Name = "WonderBtn";
 			this.WonderBtn.Size = new System.Drawing.Size(50, 50);
 			this.WonderBtn.TabIndex = 11;
+			this.ToolTip.SetToolTip(this.WonderBtn, "Building of a wonder requires 100 people, 100 seconds, and 100 of each resource.");
 			this.WonderBtn.UseVisualStyleBackColor = true;
 			this.WonderBtn.Click += new System.EventHandler(this.WonderBtn_Click);
 			// 
@@ -190,6 +195,7 @@
 			this.TowerBtn.Name = "TowerBtn";
 			this.TowerBtn.Size = new System.Drawing.Size(50, 50);
 			this.TowerBtn.TabIndex = 12;
+			this.ToolTip.SetToolTip(this.TowerBtn, "Building of a tower requires 30 people, 15 seconds, and 30 of each resource.");
 			this.TowerBtn.UseVisualStyleBackColor = true;
 			this.TowerBtn.Click += new System.EventHandler(this.TowerBtn_Click);
 			// 
@@ -201,6 +207,7 @@
 			this.BuildingBtn.Name = "BuildingBtn";
 			this.BuildingBtn.Size = new System.Drawing.Size(50, 50);
 			this.BuildingBtn.TabIndex = 13;
+			this.ToolTip.SetToolTip(this.BuildingBtn, "Building of a building requires 20 people, 10 seconds, and 20 of each resource.");
 			this.BuildingBtn.UseVisualStyleBackColor = true;
 			this.BuildingBtn.Click += new System.EventHandler(this.BuildingBtn_Click);
 			// 
@@ -263,6 +270,7 @@
 			this.WoodBtn.Size = new System.Drawing.Size(50, 50);
 			this.WoodBtn.TabIndex = 19;
 			this.WoodBtn.Tag = "wood";
+			this.ToolTip.SetToolTip(this.WoodBtn, "Harvesting wood requires 1 worker and 10 seconds.");
 			this.WoodBtn.UseVisualStyleBackColor = true;
 			this.WoodBtn.Click += new System.EventHandler(this.WoodBtn_Click);
 			// 
@@ -275,6 +283,7 @@
 			this.StoneBtn.Size = new System.Drawing.Size(50, 50);
 			this.StoneBtn.TabIndex = 20;
 			this.StoneBtn.Tag = "stone";
+			this.ToolTip.SetToolTip(this.StoneBtn, "Taking out stone requires 1 worker and 20 seconds.");
 			this.StoneBtn.UseVisualStyleBackColor = true;
 			this.StoneBtn.Click += new System.EventHandler(this.StoneBtn_Click);
 			// 
@@ -287,6 +296,7 @@
 			this.IronBtn.Size = new System.Drawing.Size(50, 50);
 			this.IronBtn.TabIndex = 21;
 			this.IronBtn.Tag = "iron";
+			this.ToolTip.SetToolTip(this.IronBtn, "Mining iron requires 1 worker and 30 seconds.");
 			this.IronBtn.UseVisualStyleBackColor = true;
 			this.IronBtn.Click += new System.EventHandler(this.IronBtn_Click);
 			// 
@@ -389,6 +399,7 @@
 			this.ImmobilizeSoldierBtn.Size = new System.Drawing.Size(152, 46);
 			this.ImmobilizeSoldierBtn.TabIndex = 32;
 			this.ImmobilizeSoldierBtn.Text = "Immobilize soldier";
+			this.ToolTip.SetToolTip(this.ImmobilizeSoldierBtn, "Soldier immobilizes back to worker and without returning previously spent gold.");
 			this.ImmobilizeSoldierBtn.UseVisualStyleBackColor = true;
 			this.ImmobilizeSoldierBtn.Click += new System.EventHandler(this.ImmobilizeSoldierBtn_Click);
 			// 
@@ -472,6 +483,7 @@
 		private Label IronCountLbl;
 		private Label GoldCountLbl;
 		private Button ImmobilizeSoldierBtn;
+		private ToolTip ToolTip;
 	}
 
 }

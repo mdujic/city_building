@@ -519,5 +519,6 @@ namespace city_building
 				MessageBox.Show("You have no soldiers to immobilize!");
 			}
 		}
+
 	}
 }
