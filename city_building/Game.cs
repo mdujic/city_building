@@ -20,7 +20,7 @@ namespace city_building
 		Button lastClicked = null;
 
 		// array of pairs of actions and times to execute after each tick
-		public List<Tuple<Action, int>> actions = new List<Tuple<Action, int>>();
+		public List<Tuple<Action, int, int>> actions = new List<Tuple<Action, int, int>>();
 
 		public Game(MainMenu m)
 
@@ -144,16 +144,34 @@ namespace city_building
 						var b = (Button)sender;
 						lastClicked = b;
 					};
-
-					//button.FlatAppearance.BorderSize = 0;
-					// dodaj interaktivnost
-					// button.Click += b_Click;
+					
 
 					panel.Controls.Add(button, y, x);
 
                 }
             }
-            panel.Dock = DockStyle.Fill;
+
+			// choose 2 random buttons from panel.Controls which have color LightGreen
+			// set their BackgroundImage to Properties.Resources.house
+			// and set BackColor to Color.Transparent
+			for (int i = 0; i < 2; ++i)
+			{
+				var random = new Random();
+				var button = (Button)panel.Controls[random.Next(0, panel.Controls.Count)];
+				while (button.BackColor != Color.LightGreen)
+				{
+					button = (Button)panel.Controls[random.Next(0, panel.Controls.Count)];
+				}
+				button.BackgroundImage = Properties.Resources.house;
+				button.BackgroundImageLayout = ImageLayout.Zoom;
+				button.BackColor = Color.Transparent;
+
+				// increment NoHousesLbl
+				NoHousesLbl.Text = (int.Parse(NoHousesLbl.Text) + 1).ToString();
+			}
+
+
+			panel.Dock = DockStyle.Fill;
             this.Controls.Add(panel);
             OutsidePanel.Controls.Add(panel);
         }
@@ -191,7 +209,8 @@ namespace city_building
 			// update label
 			TimeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
 
-			var newActions = new List<Tuple<Action, int>>();
+			var newActions = new List<Tuple<Action, int, int>>();
+			var workersWorking = 0;
 			// iterate through each element in tickActions
 			foreach (var action in actions)
 			{
@@ -206,13 +225,40 @@ namespace city_building
 				}
 				else
 				{
-					newActions.Add(new Tuple<Action, int>(a, t - 1));
+					newActions.Add(new Tuple<Action, int, int>(a, t - 1, action.Item3));
+					workersWorking += action.Item3;
 				}
 			}
 			actions = newActions;
+			
+			var workersAvailable = int.Parse(NoWorkersLbl.Text.Split('/')[0]);
+			
+			// calculate total number of houses from NoHousesLbl
+			var NoHouses = int.Parse(NoHousesLbl.Text);
+			// calculate number of building from NoBuildingsLbl
+			var NoBuildings = int.Parse(NoBuildingsLbl.Text);
+			// calculate number of towers from NoTowersLbl
+			var NoTowers = int.Parse(NoTowersLbl.Text);
+			// calculate number of wonders
+			var NoWonders = int.Parse(NoWondersLbl.Text);
 
-			// TODO: each building raises number of available workers
-			// TODO: each tower produces some amount of gold
+			// total number of workers is 5 * number of houses + 20 * number of buildings
+			var workersTotal = 5 * NoHouses + 20 * NoBuildings;
+
+			if (seconds % 10 == 0 && workersAvailable < workersTotal - workersWorking)
+			{
+				workersAvailable++;
+			}
+
+			// update NoHousesLbl in format workersAvailable/workersTotal
+			NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+
+			// each tower produces some amount of gold
+			if (seconds % 30 == 0)
+			{
+				GoldCountLbl.Text = (int.Parse(GoldCountLbl.Text) + 5 * NoTowers).ToString();
+			}
+
 		}
 
 		private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
@@ -271,7 +317,7 @@ namespace city_building
 
 						var b = lastClicked;
 						// add action to tickActions
-						actions.Add(new Tuple<Action, int>(() =>
+						actions.Add(new Tuple<Action, int, int>(() =>
 						{
 							// get workersAvailable and workersTotal
 							string[] workers = NoWorkersLbl.Text.Split('/');
@@ -283,11 +329,28 @@ namespace city_building
 							// update labels
 							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 
-							// change button to image from HouseBtn
+							// change button to image from sender button
 							b.BackgroundImage = sender.BackgroundImage;
 							b.BackgroundImageLayout = ImageLayout.Zoom;
 							b.BackColor = Color.Transparent;
-						}, seconds));
+
+							// increase number of buildings
+							switch (sender.Tag)
+							{
+								case "House":
+									NoHousesLbl.Text = (Convert.ToInt32(NoHousesLbl.Text) + 1).ToString();
+									break;
+								case "Building":
+									NoBuildingsLbl.Text = (Convert.ToInt32(NoBuildingsLbl.Text) + 1).ToString();
+									break;
+								case "Tower":
+									NoTowersLbl.Text = (Convert.ToInt32(NoTowersLbl.Text) + 1).ToString();
+									break;
+								case "Wonder":
+									NoWondersLbl.Text = (Convert.ToInt32(NoWondersLbl.Text) + 1).ToString();
+									break;
+							}
+						}, seconds, workersNecessary));
 
 					}
 					else
@@ -418,7 +481,7 @@ namespace city_building
 						// update labels
 						NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 						var b = lastClicked;
-						actions.Add(new Tuple<Action, int>(() =>
+						actions.Add(new Tuple<Action, int, int>(() =>
 						{
 							// get workersAvailable and workersTotal
 							// get number of workers in format available/total
@@ -468,7 +531,7 @@ namespace city_building
 							// change button color back to before
 							b.BackgroundImage = null;
 							b.BackColor = BackColorBefore;
-						}, seconds));
+						}, seconds, 1));
 					}
 					else
 					{
@@ -520,5 +583,210 @@ namespace city_building
 			}
 		}
 
+		private void GoldBtn_Click(object sender, EventArgs e)
+		{
+			// dialog box pops out with options to buy/sell resources
+
+			// get number of each resource
+			int wood = Convert.ToInt32(WoodCountLbl.Text);
+			int stone = Convert.ToInt32(StoneCountLbl.Text);
+			int iron = Convert.ToInt32(IronCountLbl.Text);
+			int gold = Convert.ToInt32(GoldCountLbl.Text);
+
+			// create dialog box
+			Form dialogBox = new Form();
+			dialogBox.Text = "Market";
+			dialogBox.Size = new Size(300, 600);
+			dialogBox.StartPosition = FormStartPosition.CenterScreen;
+			dialogBox.FormBorderStyle = FormBorderStyle.FixedDialog;
+			dialogBox.MaximizeBox = false;
+			dialogBox.MinimizeBox = false;
+			dialogBox.ShowIcon = false;
+			dialogBox.ShowInTaskbar = false;
+			dialogBox.TopMost = true;
+
+			// create labels
+			Label woodLbl = new Label();
+			woodLbl.Text = "Wood: " + wood.ToString();
+			woodLbl.Location = new Point(10, 10);
+			woodLbl.Size = new Size(100, 20);
+			dialogBox.Controls.Add(woodLbl);
+
+			Label stoneLbl = new Label();
+			stoneLbl.Text = "Stone: " + stone.ToString();
+			stoneLbl.Location = new Point(10, 40);
+			stoneLbl.Size = new Size(100, 20);
+			dialogBox.Controls.Add(stoneLbl);
+
+			Label ironLbl = new Label();
+			ironLbl.Text = "Iron: " + iron.ToString();
+			ironLbl.Location = new Point(10, 70);
+			ironLbl.Size = new Size(100, 20);
+			dialogBox.Controls.Add(ironLbl);
+
+			Label goldLbl = new Label();
+			goldLbl.Text = "Gold: " + gold.ToString();
+			goldLbl.Location = new Point(10, 100);
+			goldLbl.Size = new Size(100, 20);
+			dialogBox.Controls.Add(goldLbl);
+
+			// create buttons
+			Button buyWoodBtn = new Button();
+			buyWoodBtn.Text = "Buy Wood";
+			buyWoodBtn.Location = new Point(10, 130);
+			buyWoodBtn.Size = new Size(100, 20);
+			buyWoodBtn.Click += (s, e) =>
+			{
+				// check if there is enough gold
+				if (gold >= 10)
+				{
+					// update labels
+					wood += 10;
+					gold -= 10;
+					woodLbl.Text = "Wood: " + wood.ToString();
+					goldLbl.Text = "Gold: " + gold.ToString();
+				}
+				else
+				{
+					MessageBox.Show("Not enough gold!");
+				}
+			};
+			dialogBox.Controls.Add(buyWoodBtn);
+
+			Button buyStoneBtn = new Button();
+			buyStoneBtn.Text = "Buy Stone";
+			buyStoneBtn.Location = new Point(10, 160);
+			buyStoneBtn.Size = new Size(100, 20);
+			buyStoneBtn.Click += (s, e) =>
+			{
+				// check if there is enough gold
+				if (gold >= 20)
+				{
+					// update labels
+					stone += 10;
+					gold -= 20;
+					stoneLbl.Text = "Stone: " + stone.ToString();
+					goldLbl.Text = "Gold: " + gold.ToString();
+				}
+				else
+				{
+					MessageBox.Show("Not enough gold!");
+				}
+			};
+
+			dialogBox.Controls.Add(buyStoneBtn);
+
+			Button buyIronBtn = new Button();
+			buyIronBtn.Text = "Buy Iron";
+			buyIronBtn.Location = new Point(10, 190);
+			buyIronBtn.Size = new Size(100, 20);
+
+			buyIronBtn.Click += (s, e) =>
+			{
+				// check if there is enough gold
+				if (gold >= 30)
+				{
+					// update labels
+					iron += 10;
+					gold -= 30;
+					ironLbl.Text = "Iron: " + iron.ToString();
+					goldLbl.Text = "Gold: " + gold.ToString();
+				}
+				else
+				{
+					MessageBox.Show("Not enough gold!");
+				}
+			};
+
+			dialogBox.Controls.Add(buyIronBtn);
+
+			Button sellWoodBtn = new Button();
+			sellWoodBtn.Text = "Sell Wood";
+			sellWoodBtn.Location = new Point(10, 220);
+			sellWoodBtn.Size = new Size(100, 20);
+
+			sellWoodBtn.Click += (s, e) =>
+			{
+				// check if there is enough wood
+				if (wood >= 10)
+				{
+					// update labels
+					wood -= 10;
+					gold += 10;
+					woodLbl.Text = "Wood: " + wood.ToString();
+					goldLbl.Text = "Gold: " + gold.ToString();
+				}
+				else
+				{
+					MessageBox.Show("Not enough wood!");
+				}
+			};
+
+			dialogBox.Controls.Add(sellWoodBtn);
+
+			Button sellStoneBtn = new Button();
+			sellStoneBtn.Text = "Sell Stone";
+			sellStoneBtn.Location = new Point(10, 250);
+			sellStoneBtn.Size = new Size(100, 20);
+
+			sellStoneBtn.Click += (s, e) =>
+			{
+				// check if there is enough stone
+				if (stone >= 10)
+				{
+					// update labels
+					stone -= 10;
+					gold += 20;
+					stoneLbl.Text = "Stone: " + stone.ToString();
+					goldLbl.Text = "Gold: " + gold.ToString();
+				}
+				else
+				{
+					MessageBox.Show("Not enough stone!");
+				}
+			};
+
+			dialogBox.Controls.Add(sellStoneBtn);
+
+			Button sellIronBtn = new Button();
+			sellIronBtn.Text = "Sell Iron";
+			sellIronBtn.Location = new Point(10, 280);
+			sellIronBtn.Size = new Size(100, 20);
+
+			sellIronBtn.Click += (s, e) =>
+			{
+				// check if there is enough iron
+				if (iron >= 10)
+				{
+					// update labels
+					iron -= 10;
+					gold += 30;
+					ironLbl.Text = "Iron: " + iron.ToString();
+					goldLbl.Text = "Gold: " + gold.ToString();
+				}
+				else
+				{
+					MessageBox.Show("Not enough iron!");
+				}
+			};
+
+			dialogBox.Controls.Add(sellIronBtn);
+
+			// create close button
+			Button closeBtn = new Button();
+			closeBtn.Text = "Close";
+			closeBtn.Location = new Point(10, 310);
+			closeBtn.Size = new Size(100, 20);
+			closeBtn.Click += (s, e) =>
+			{
+				// close dialog box
+				dialogBox.Close();
+			};
+			dialogBox.Controls.Add(closeBtn);
+
+			// show dialog box
+			dialogBox.ShowDialog();
+
+		}
 	}
 }

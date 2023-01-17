@@ -62,6 +62,10 @@
 			this.GoldCountLbl = new System.Windows.Forms.Label();
 			this.ImmobilizeSoldierBtn = new System.Windows.Forms.Button();
 			this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.NoHousesLbl = new System.Windows.Forms.Label();
+			this.NoBuildingsLbl = new System.Windows.Forms.Label();
+			this.NoTowersLbl = new System.Windows.Forms.Label();
+			this.NoWondersLbl = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// ReturnBtn
@@ -149,9 +153,9 @@
 			this.NoWorkersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.NoWorkersLbl.Location = new System.Drawing.Point(60, 91);
 			this.NoWorkersLbl.Name = "NoWorkersLbl";
-			this.NoWorkersLbl.Size = new System.Drawing.Size(63, 26);
+			this.NoWorkersLbl.Size = new System.Drawing.Size(45, 26);
 			this.NoWorkersLbl.TabIndex = 8;
-			this.NoWorkersLbl.Text = "20/20";
+			this.NoWorkersLbl.Text = "0/0";
 			// 
 			// ChooseBuildingLbl
 			// 
@@ -171,7 +175,9 @@
 			this.HouseBtn.Name = "HouseBtn";
 			this.HouseBtn.Size = new System.Drawing.Size(50, 50);
 			this.HouseBtn.TabIndex = 10;
-			this.ToolTip.SetToolTip(this.HouseBtn, "Building of a house requires 10 people, 5 seconds, and 10 of each resource.");
+			this.HouseBtn.Tag = "House";
+			this.ToolTip.SetToolTip(this.HouseBtn, "Building of a house requires 10 people, 5 seconds, and 10 of each resource. In ea" +
+        "ch house live 5 people.");
 			this.HouseBtn.UseVisualStyleBackColor = true;
 			this.HouseBtn.Click += new System.EventHandler(this.HouseBtn_Click);
 			// 
@@ -179,11 +185,13 @@
 			// 
 			this.WonderBtn.BackgroundImage = global::city_building.Properties.Resources.jesus;
 			this.WonderBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.WonderBtn.Location = new System.Drawing.Point(93, 585);
+			this.WonderBtn.Location = new System.Drawing.Point(93, 599);
 			this.WonderBtn.Name = "WonderBtn";
 			this.WonderBtn.Size = new System.Drawing.Size(50, 50);
 			this.WonderBtn.TabIndex = 11;
-			this.ToolTip.SetToolTip(this.WonderBtn, "Building of a wonder requires 100 people, 100 seconds, and 100 of each resource.");
+			this.WonderBtn.Tag = "Wonder";
+			this.ToolTip.SetToolTip(this.WonderBtn, "Building of a wonder requires 100 people, 100 seconds, and 100 of each resource. " +
+        "When wonder is built, game is finished.");
 			this.WonderBtn.UseVisualStyleBackColor = true;
 			this.WonderBtn.Click += new System.EventHandler(this.WonderBtn_Click);
 			// 
@@ -191,11 +199,13 @@
 			// 
 			this.TowerBtn.BackgroundImage = global::city_building.Properties.Resources.tower;
 			this.TowerBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.TowerBtn.Location = new System.Drawing.Point(12, 585);
+			this.TowerBtn.Location = new System.Drawing.Point(12, 599);
 			this.TowerBtn.Name = "TowerBtn";
 			this.TowerBtn.Size = new System.Drawing.Size(50, 50);
 			this.TowerBtn.TabIndex = 12;
-			this.ToolTip.SetToolTip(this.TowerBtn, "Building of a tower requires 30 people, 15 seconds, and 30 of each resource.");
+			this.TowerBtn.Tag = "Tower";
+			this.ToolTip.SetToolTip(this.TowerBtn, "Building of a tower requires 30 people, 15 seconds, and 30 of each resource. Towe" +
+        "r produces 5 gold each 30 seconds.");
 			this.TowerBtn.UseVisualStyleBackColor = true;
 			this.TowerBtn.Click += new System.EventHandler(this.TowerBtn_Click);
 			// 
@@ -207,7 +217,9 @@
 			this.BuildingBtn.Name = "BuildingBtn";
 			this.BuildingBtn.Size = new System.Drawing.Size(50, 50);
 			this.BuildingBtn.TabIndex = 13;
-			this.ToolTip.SetToolTip(this.BuildingBtn, "Building of a building requires 20 people, 10 seconds, and 20 of each resource.");
+			this.BuildingBtn.Tag = "Building";
+			this.ToolTip.SetToolTip(this.BuildingBtn, "Building of a building requires 20 people, 10 seconds, and 20 of each resource. I" +
+        "n each building lives 20 people.");
 			this.BuildingBtn.UseVisualStyleBackColor = true;
 			this.BuildingBtn.Click += new System.EventHandler(this.BuildingBtn_Click);
 			// 
@@ -215,7 +227,7 @@
 			// 
 			this.WonderLbl.AutoSize = true;
 			this.WonderLbl.Font = new System.Drawing.Font("Showcard Gothic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.WonderLbl.Location = new System.Drawing.Point(84, 638);
+			this.WonderLbl.Location = new System.Drawing.Point(84, 652);
 			this.WonderLbl.Name = "WonderLbl";
 			this.WonderLbl.Size = new System.Drawing.Size(67, 17);
 			this.WonderLbl.TabIndex = 14;
@@ -225,7 +237,7 @@
 			// 
 			this.TowerLbl.AutoSize = true;
 			this.TowerLbl.Font = new System.Drawing.Font("Showcard Gothic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			this.TowerLbl.Location = new System.Drawing.Point(7, 638);
+			this.TowerLbl.Location = new System.Drawing.Point(7, 652);
 			this.TowerLbl.Name = "TowerLbl";
 			this.TowerLbl.Size = new System.Drawing.Size(57, 17);
 			this.TowerLbl.TabIndex = 15;
@@ -310,6 +322,7 @@
 			this.GoldBtn.TabIndex = 23;
 			this.GoldBtn.Tag = "gold";
 			this.GoldBtn.UseVisualStyleBackColor = true;
+			this.GoldBtn.Click += new System.EventHandler(this.GoldBtn_Click);
 			// 
 			// GoldLbl
 			// 
@@ -357,9 +370,9 @@
 			this.WoodCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.WoodCountLbl.Location = new System.Drawing.Point(181, 905);
 			this.WoodCountLbl.Name = "WoodCountLbl";
-			this.WoodCountLbl.Size = new System.Drawing.Size(37, 21);
+			this.WoodCountLbl.Size = new System.Drawing.Size(20, 21);
 			this.WoodCountLbl.TabIndex = 28;
-			this.WoodCountLbl.Text = "100";
+			this.WoodCountLbl.Text = "0";
 			// 
 			// StoneCountLbl
 			// 
@@ -367,9 +380,9 @@
 			this.StoneCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.StoneCountLbl.Location = new System.Drawing.Point(257, 905);
 			this.StoneCountLbl.Name = "StoneCountLbl";
-			this.StoneCountLbl.Size = new System.Drawing.Size(37, 21);
+			this.StoneCountLbl.Size = new System.Drawing.Size(20, 21);
 			this.StoneCountLbl.TabIndex = 29;
-			this.StoneCountLbl.Text = "100";
+			this.StoneCountLbl.Text = "0";
 			// 
 			// IronCountLbl
 			// 
@@ -377,9 +390,9 @@
 			this.IronCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.IronCountLbl.Location = new System.Drawing.Point(323, 905);
 			this.IronCountLbl.Name = "IronCountLbl";
-			this.IronCountLbl.Size = new System.Drawing.Size(37, 21);
+			this.IronCountLbl.Size = new System.Drawing.Size(20, 21);
 			this.IronCountLbl.TabIndex = 30;
-			this.IronCountLbl.Text = "100";
+			this.IronCountLbl.Text = "0";
 			// 
 			// GoldCountLbl
 			// 
@@ -387,9 +400,9 @@
 			this.GoldCountLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.GoldCountLbl.Location = new System.Drawing.Point(403, 905);
 			this.GoldCountLbl.Name = "GoldCountLbl";
-			this.GoldCountLbl.Size = new System.Drawing.Size(37, 21);
+			this.GoldCountLbl.Size = new System.Drawing.Size(20, 21);
 			this.GoldCountLbl.TabIndex = 31;
-			this.GoldCountLbl.Text = "100";
+			this.GoldCountLbl.Text = "0";
 			// 
 			// ImmobilizeSoldierBtn
 			// 
@@ -403,12 +416,56 @@
 			this.ImmobilizeSoldierBtn.UseVisualStyleBackColor = true;
 			this.ImmobilizeSoldierBtn.Click += new System.EventHandler(this.ImmobilizeSoldierBtn_Click);
 			// 
+			// NoHousesLbl
+			// 
+			this.NoHousesLbl.AutoSize = true;
+			this.NoHousesLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.NoHousesLbl.Location = new System.Drawing.Point(25, 558);
+			this.NoHousesLbl.Name = "NoHousesLbl";
+			this.NoHousesLbl.Size = new System.Drawing.Size(24, 26);
+			this.NoHousesLbl.TabIndex = 33;
+			this.NoHousesLbl.Text = "0";
+			// 
+			// NoBuildingsLbl
+			// 
+			this.NoBuildingsLbl.AutoSize = true;
+			this.NoBuildingsLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.NoBuildingsLbl.Location = new System.Drawing.Point(105, 558);
+			this.NoBuildingsLbl.Name = "NoBuildingsLbl";
+			this.NoBuildingsLbl.Size = new System.Drawing.Size(24, 26);
+			this.NoBuildingsLbl.TabIndex = 34;
+			this.NoBuildingsLbl.Text = "0";
+			// 
+			// NoTowersLbl
+			// 
+			this.NoTowersLbl.AutoSize = true;
+			this.NoTowersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.NoTowersLbl.Location = new System.Drawing.Point(25, 669);
+			this.NoTowersLbl.Name = "NoTowersLbl";
+			this.NoTowersLbl.Size = new System.Drawing.Size(24, 26);
+			this.NoTowersLbl.TabIndex = 35;
+			this.NoTowersLbl.Text = "0";
+			// 
+			// NoWondersLbl
+			// 
+			this.NoWondersLbl.AutoSize = true;
+			this.NoWondersLbl.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.NoWondersLbl.Location = new System.Drawing.Point(105, 669);
+			this.NoWondersLbl.Name = "NoWondersLbl";
+			this.NoWondersLbl.Size = new System.Drawing.Size(24, 26);
+			this.NoWondersLbl.TabIndex = 36;
+			this.NoWondersLbl.Text = "0";
+			// 
 			// Game
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(982, 953);
 			this.ControlBox = false;
+			this.Controls.Add(this.NoWondersLbl);
+			this.Controls.Add(this.NoTowersLbl);
+			this.Controls.Add(this.NoBuildingsLbl);
+			this.Controls.Add(this.NoHousesLbl);
 			this.Controls.Add(this.ImmobilizeSoldierBtn);
 			this.Controls.Add(this.GoldCountLbl);
 			this.Controls.Add(this.IronCountLbl);
@@ -484,6 +541,10 @@
 		private Label GoldCountLbl;
 		private Button ImmobilizeSoldierBtn;
 		private ToolTip ToolTip;
+		private Label NoHousesLbl;
+		private Label NoBuildingsLbl;
+		private Label NoTowersLbl;
+		private Label NoWondersLbl;
 	}
 
 }
