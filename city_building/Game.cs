@@ -23,14 +23,14 @@ namespace city_building
 		public List<Tuple<Action, int, int>> actions = new List<Tuple<Action, int, int>>();
 		
 		public Game(MainMenu m)
-
-        {
+        {	
             InitializeComponent();
             _m = m;
             velicina = _m.o.GetMapSize();
-			
-            // Generate the map
-            GenerateMap();
+			LoadingScreen.ShowLoadingScreen();
+			// Generate the map
+			GenerateMap(); //this takes ages
+			LoadingScreen.CloseForm();
         }
 
         void GenerateMap()
@@ -56,10 +56,9 @@ namespace city_building
                 }
 			}
 			AddIronNoise(biomes);
-			
+
 			AddMapButtons(biomes);
-			
-        }
+		}
 
 		void AddIronNoise(string[,] biomes)
 		{
