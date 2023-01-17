@@ -15,6 +15,8 @@ namespace city_building
 		private System.Media.SoundPlayer _sound;
 		private int MapSize = 25;
 
+		public Dictionary<string, string> keys;
+		
 		// function to return SoundBtn text
 		public string SoundBtnText()
 		{

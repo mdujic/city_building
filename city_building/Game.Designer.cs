@@ -190,8 +190,8 @@
 			this.WonderBtn.Size = new System.Drawing.Size(50, 50);
 			this.WonderBtn.TabIndex = 11;
 			this.WonderBtn.Tag = "Wonder";
-			this.ToolTip.SetToolTip(this.WonderBtn, "Building of a wonder requires 100 people, 100 seconds, and 100 of each resource. " +
-        "When wonder is built, game is finished.");
+			this.ToolTip.SetToolTip(this.WonderBtn, "Building of a wonder requires 1000 people, 1000 seconds, and 1000 of each resourc" +
+        "e. When wonder is built, game is finished.");
 			this.WonderBtn.UseVisualStyleBackColor = true;
 			this.WonderBtn.Click += new System.EventHandler(this.WonderBtn_Click);
 			// 
@@ -205,7 +205,7 @@
 			this.TowerBtn.TabIndex = 12;
 			this.TowerBtn.Tag = "Tower";
 			this.ToolTip.SetToolTip(this.TowerBtn, "Building of a tower requires 30 people, 15 seconds, and 30 of each resource. Towe" +
-        "r produces 5 gold each 30 seconds.");
+        "r produces 5 gold each 5 seconds.");
 			this.TowerBtn.UseVisualStyleBackColor = true;
 			this.TowerBtn.Click += new System.EventHandler(this.TowerBtn_Click);
 			// 
@@ -498,8 +498,10 @@
 			this.Controls.Add(this.TimeLabel);
 			this.Controls.Add(this.ReturnBtn);
 			this.ForeColor = System.Drawing.Color.Maroon;
+			this.KeyPreview = true;
 			this.Name = "Game";
 			this.Text = "Game";
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Game_KeyPress);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -21,14 +21,14 @@ namespace city_building
 
 		// array of pairs of actions and times to execute after each tick
 		public List<Tuple<Action, int, int>> actions = new List<Tuple<Action, int, int>>();
-
+		
 		public Game(MainMenu m)
 
         {
             InitializeComponent();
             _m = m;
             velicina = _m.o.GetMapSize();
-
+			
             // Generate the map
             GenerateMap();
         }
@@ -245,17 +245,22 @@ namespace city_building
 			var numSoldiers = int.Parse(NoSoldiersLbl.Text);
 			// total number of workers is 5 * number of houses + 20 * number of buildings
 			var workersTotal = 5 * NoHouses + 20 * NoBuildings - numSoldiers;
-			
-			if (seconds % 10 == 0 && workersAvailable < workersTotal - workersWorking - numSoldiers)
+
+			bool condition = workersAvailable + NoHouses + 4 * NoBuildings < workersTotal - workersWorking - numSoldiers;
+			if (seconds % 10 == 0 && condition)
 			{
-				workersAvailable++;
+				workersAvailable += NoHouses + 4 * NoBuildings;
+			}
+			else if(seconds % 10 == 0 && !condition)
+			{
+				workersAvailable = workersTotal - workersWorking - numSoldiers;
 			}
 
 			// update NoHousesLbl in format workersAvailable/workersTotal
 			NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 
 			// each tower produces some amount of gold
-			if (seconds % 30 == 0)
+			if (seconds % 5 == 0)
 			{
 				GoldCountLbl.Text = (int.Parse(GoldCountLbl.Text) + 5 * NoTowers).ToString();
 			}
@@ -370,24 +375,25 @@ namespace city_building
 			}
 		}
 
+
 		private void HouseBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 10, 0, 10, 5);
+			Build((Button)sender, 10, 10, 10, 5);
 		}
 
 		private void BuildingBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 20, 0, 20, 10);
+			Build((Button)sender, 20, 20, 20, 10);
 		}
 
 		private void TowerBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 30, 0, 30, 15);
+			Build((Button)sender, 30, 30, 30, 15);
 		}
 
 		private void WonderBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 100, 100, 100, 100);
+			Build((Button)sender, 1000, 1000, 1000, 1000);
 		}
 
 		private void AddSoldierBtn_Click(object sender, EventArgs e)
@@ -420,6 +426,9 @@ namespace city_building
 					// update labels
 					GoldCountLbl.Text = gold.ToString();
 					NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+
+					// update iron label
+					IronCountLbl.Text = iron.ToString();
 
 					// get number of soldiers in format
 					int soldiers = Convert.ToInt32(NoSoldiersLbl.Text);
@@ -631,6 +640,35 @@ namespace city_building
 		public void set_gold(string gold)
 		{
 			GoldCountLbl.Text = gold;
+		}
+
+		private void Game_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			// MessageBox.Show(e.KeyChar.ToString().ToUpper());
+			switch (e.KeyChar.ToString().ToUpper())
+			{
+				case "H":
+					Build(HouseBtn, 10, 10, 10, 5);
+					break;
+				case "B":
+					Build(BuildingBtn, 20, 20, 20, 10);
+					break;
+				case "T":
+					Build(TowerBtn, 30, 30, 30, 15);
+					break;
+				case "J":
+					Build(WonderBtn, 1000, 1000, 1000, 1000);
+					break;
+				case "W":
+					HarvestMine(WoodBtn, 5);
+					break;
+				case "S":
+					HarvestMine(StoneBtn, 10);
+					break;
+				case "I":
+					HarvestMine(IronBtn, 15);
+					break;
+			}
 		}
 	}
 }
