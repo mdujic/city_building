@@ -685,12 +685,14 @@ namespace city_building
 
 			// open leaderboard dialog box
 			Leaderboard leaderboard = new Leaderboard();
+			int minutes = time / 60;
+			int seconds = time % 60;
 
 			for (int i = 1; i <= 10; i++)
 			{
 				// find label with name "Name" + i
 				Control namei = leaderboard.Controls.Find("Name" + i, true)[0];
-				if (time.ToString() == namei.Text)
+				if (minutes + ":" + seconds == namei.Text)
 				{
 					// change color of label to black
 					namei.ForeColor = Color.Black;
@@ -700,8 +702,6 @@ namespace city_building
 			}
 			if (leaderboard.FeedbackLbl.Text == "")
 			{
-				int minutes = time / 60;
-				int seconds = time % 60;
 				leaderboard.FeedbackLbl.Text = "Your result is " + minutes + ":" + seconds;
 			}
 
