@@ -353,7 +353,8 @@ namespace city_building
 									break;
 								case "Wonder":
 									NoWondersLbl.Text = (Convert.ToInt32(NoWondersLbl.Text) + 1).ToString();
-									endOfGame();
+									if (NoWondersLbl.Text == "1")
+										endOfGame();
 									break;
 							}
 						}, seconds, workersNecessary));
@@ -674,7 +675,38 @@ namespace city_building
 		// this function is called when wonder is built
 		private void endOfGame()
 		{
-			
+			// append variable time to the end of file Results
+			// open file Results
+			StreamWriter sw = new StreamWriter("Results.txt", true);
+			// write time to file
+			sw.WriteLine(time);
+			// close file
+			sw.Close();
+
+			// open leaderboard dialog box
+			Leaderboard leaderboard = new Leaderboard();
+
+			for (int i = 1; i <= 10; i++)
+			{
+				// find label with name "Name" + i
+				Control namei = leaderboard.Controls.Find("Name" + i, true)[0];
+				if (time.ToString() == namei.Text)
+				{
+					// change color of label to black
+					namei.ForeColor = Color.Black;
+					// also change Text of label FeedbackLbl to "You are in top 10!"
+					leaderboard.FeedbackLbl.Text = "Congrats! You are in top 10!";
+				}
+			}
+			if (leaderboard.FeedbackLbl.Text == "")
+			{
+				int minutes = time / 60;
+				int seconds = time % 60;
+				leaderboard.FeedbackLbl.Text = "Your result is " + minutes + ":" + seconds;
+			}
+
+			leaderboard.ShowDialog();
+
 		}
 	}
 }

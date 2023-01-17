@@ -49,6 +49,7 @@
 			this.Name6 = new System.Windows.Forms.Label();
 			this.Name7 = new System.Windows.Forms.Label();
 			this.Name1 = new System.Windows.Forms.Label();
+			this.FeedbackLbl = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// LeaderboardLbl
@@ -67,7 +68,7 @@
 			this.Leaderboard1.AutoSize = true;
 			this.Leaderboard1.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard1.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard1.Location = new System.Drawing.Point(67, 66);
+			this.Leaderboard1.Location = new System.Drawing.Point(67, 35);
 			this.Leaderboard1.Name = "Leaderboard1";
 			this.Leaderboard1.Size = new System.Drawing.Size(26, 26);
 			this.Leaderboard1.TabIndex = 1;
@@ -78,7 +79,7 @@
 			this.Leaderboard7.AutoSize = true;
 			this.Leaderboard7.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard7.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard7.Location = new System.Drawing.Point(67, 222);
+			this.Leaderboard7.Location = new System.Drawing.Point(67, 191);
 			this.Leaderboard7.Name = "Leaderboard7";
 			this.Leaderboard7.Size = new System.Drawing.Size(29, 26);
 			this.Leaderboard7.TabIndex = 2;
@@ -89,7 +90,7 @@
 			this.Leaderboard6.AutoSize = true;
 			this.Leaderboard6.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard6.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard6.Location = new System.Drawing.Point(67, 196);
+			this.Leaderboard6.Location = new System.Drawing.Point(67, 165);
 			this.Leaderboard6.Name = "Leaderboard6";
 			this.Leaderboard6.Size = new System.Drawing.Size(29, 26);
 			this.Leaderboard6.TabIndex = 3;
@@ -100,7 +101,7 @@
 			this.Leaderboard5.AutoSize = true;
 			this.Leaderboard5.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard5.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard5.Location = new System.Drawing.Point(67, 170);
+			this.Leaderboard5.Location = new System.Drawing.Point(67, 139);
 			this.Leaderboard5.Name = "Leaderboard5";
 			this.Leaderboard5.Size = new System.Drawing.Size(28, 26);
 			this.Leaderboard5.TabIndex = 4;
@@ -111,7 +112,7 @@
 			this.Leaderboard4.AutoSize = true;
 			this.Leaderboard4.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard4.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard4.Location = new System.Drawing.Point(67, 144);
+			this.Leaderboard4.Location = new System.Drawing.Point(67, 113);
 			this.Leaderboard4.Name = "Leaderboard4";
 			this.Leaderboard4.Size = new System.Drawing.Size(29, 26);
 			this.Leaderboard4.TabIndex = 5;
@@ -122,7 +123,7 @@
 			this.Leaderboard3.AutoSize = true;
 			this.Leaderboard3.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard3.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard3.Location = new System.Drawing.Point(67, 118);
+			this.Leaderboard3.Location = new System.Drawing.Point(67, 87);
 			this.Leaderboard3.Name = "Leaderboard3";
 			this.Leaderboard3.Size = new System.Drawing.Size(28, 26);
 			this.Leaderboard3.TabIndex = 6;
@@ -133,7 +134,7 @@
 			this.Leaderboard2.AutoSize = true;
 			this.Leaderboard2.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard2.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard2.Location = new System.Drawing.Point(67, 92);
+			this.Leaderboard2.Location = new System.Drawing.Point(67, 61);
 			this.Leaderboard2.Name = "Leaderboard2";
 			this.Leaderboard2.Size = new System.Drawing.Size(27, 26);
 			this.Leaderboard2.TabIndex = 7;
@@ -144,7 +145,7 @@
 			this.Leaderboard10.AutoSize = true;
 			this.Leaderboard10.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard10.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard10.Location = new System.Drawing.Point(67, 300);
+			this.Leaderboard10.Location = new System.Drawing.Point(67, 269);
 			this.Leaderboard10.Name = "Leaderboard10";
 			this.Leaderboard10.Size = new System.Drawing.Size(38, 26);
 			this.Leaderboard10.TabIndex = 9;
@@ -155,7 +156,7 @@
 			this.Leaderboard9.AutoSize = true;
 			this.Leaderboard9.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard9.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard9.Location = new System.Drawing.Point(67, 274);
+			this.Leaderboard9.Location = new System.Drawing.Point(67, 243);
 			this.Leaderboard9.Name = "Leaderboard9";
 			this.Leaderboard9.Size = new System.Drawing.Size(29, 26);
 			this.Leaderboard9.TabIndex = 10;
@@ -166,7 +167,7 @@
 			this.Leaderboard8.AutoSize = true;
 			this.Leaderboard8.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Leaderboard8.ForeColor = System.Drawing.Color.Maroon;
-			this.Leaderboard8.Location = new System.Drawing.Point(67, 248);
+			this.Leaderboard8.Location = new System.Drawing.Point(67, 217);
 			this.Leaderboard8.Name = "Leaderboard8";
 			this.Leaderboard8.Size = new System.Drawing.Size(29, 26);
 			this.Leaderboard8.TabIndex = 11;
@@ -177,7 +178,7 @@
 			this.Name8.AutoSize = true;
 			this.Name8.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name8.ForeColor = System.Drawing.Color.Maroon;
-			this.Name8.Location = new System.Drawing.Point(99, 248);
+			this.Name8.Location = new System.Drawing.Point(99, 217);
 			this.Name8.Name = "Name8";
 			this.Name8.Size = new System.Drawing.Size(0, 26);
 			this.Name8.TabIndex = 21;
@@ -187,7 +188,7 @@
 			this.Name9.AutoSize = true;
 			this.Name9.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name9.ForeColor = System.Drawing.Color.Maroon;
-			this.Name9.Location = new System.Drawing.Point(99, 274);
+			this.Name9.Location = new System.Drawing.Point(99, 243);
 			this.Name9.Name = "Name9";
 			this.Name9.Size = new System.Drawing.Size(0, 26);
 			this.Name9.TabIndex = 20;
@@ -197,7 +198,7 @@
 			this.Name10.AutoSize = true;
 			this.Name10.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name10.ForeColor = System.Drawing.Color.Maroon;
-			this.Name10.Location = new System.Drawing.Point(99, 300);
+			this.Name10.Location = new System.Drawing.Point(99, 269);
 			this.Name10.Name = "Name10";
 			this.Name10.Size = new System.Drawing.Size(0, 26);
 			this.Name10.TabIndex = 19;
@@ -207,7 +208,7 @@
 			this.Name2.AutoSize = true;
 			this.Name2.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name2.ForeColor = System.Drawing.Color.Maroon;
-			this.Name2.Location = new System.Drawing.Point(99, 92);
+			this.Name2.Location = new System.Drawing.Point(99, 61);
 			this.Name2.Name = "Name2";
 			this.Name2.Size = new System.Drawing.Size(0, 26);
 			this.Name2.TabIndex = 18;
@@ -217,7 +218,7 @@
 			this.Name3.AutoSize = true;
 			this.Name3.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name3.ForeColor = System.Drawing.Color.Maroon;
-			this.Name3.Location = new System.Drawing.Point(99, 118);
+			this.Name3.Location = new System.Drawing.Point(99, 87);
 			this.Name3.Name = "Name3";
 			this.Name3.Size = new System.Drawing.Size(0, 26);
 			this.Name3.TabIndex = 17;
@@ -227,7 +228,7 @@
 			this.Name4.AutoSize = true;
 			this.Name4.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name4.ForeColor = System.Drawing.Color.Maroon;
-			this.Name4.Location = new System.Drawing.Point(99, 144);
+			this.Name4.Location = new System.Drawing.Point(99, 113);
 			this.Name4.Name = "Name4";
 			this.Name4.Size = new System.Drawing.Size(0, 26);
 			this.Name4.TabIndex = 16;
@@ -237,7 +238,7 @@
 			this.Name5.AutoSize = true;
 			this.Name5.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name5.ForeColor = System.Drawing.Color.Maroon;
-			this.Name5.Location = new System.Drawing.Point(99, 170);
+			this.Name5.Location = new System.Drawing.Point(99, 139);
 			this.Name5.Name = "Name5";
 			this.Name5.Size = new System.Drawing.Size(0, 26);
 			this.Name5.TabIndex = 15;
@@ -247,7 +248,7 @@
 			this.Name6.AutoSize = true;
 			this.Name6.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name6.ForeColor = System.Drawing.Color.Maroon;
-			this.Name6.Location = new System.Drawing.Point(99, 196);
+			this.Name6.Location = new System.Drawing.Point(99, 165);
 			this.Name6.Name = "Name6";
 			this.Name6.Size = new System.Drawing.Size(0, 26);
 			this.Name6.TabIndex = 14;
@@ -257,7 +258,7 @@
 			this.Name7.AutoSize = true;
 			this.Name7.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name7.ForeColor = System.Drawing.Color.Maroon;
-			this.Name7.Location = new System.Drawing.Point(99, 222);
+			this.Name7.Location = new System.Drawing.Point(99, 191);
 			this.Name7.Name = "Name7";
 			this.Name7.Size = new System.Drawing.Size(0, 26);
 			this.Name7.TabIndex = 13;
@@ -267,16 +268,27 @@
 			this.Name1.AutoSize = true;
 			this.Name1.Font = new System.Drawing.Font("Showcard Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Name1.ForeColor = System.Drawing.Color.Maroon;
-			this.Name1.Location = new System.Drawing.Point(99, 66);
+			this.Name1.Location = new System.Drawing.Point(99, 35);
 			this.Name1.Name = "Name1";
 			this.Name1.Size = new System.Drawing.Size(0, 26);
 			this.Name1.TabIndex = 12;
+			// 
+			// FeedbackLbl
+			// 
+			this.FeedbackLbl.AutoSize = true;
+			this.FeedbackLbl.Font = new System.Drawing.Font("Showcard Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.FeedbackLbl.ForeColor = System.Drawing.Color.Maroon;
+			this.FeedbackLbl.Location = new System.Drawing.Point(12, 308);
+			this.FeedbackLbl.Name = "FeedbackLbl";
+			this.FeedbackLbl.Size = new System.Drawing.Size(0, 21);
+			this.FeedbackLbl.TabIndex = 22;
 			// 
 			// Leaderboard
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(282, 353);
+			this.Controls.Add(this.FeedbackLbl);
 			this.Controls.Add(this.Name8);
 			this.Controls.Add(this.Name9);
 			this.Controls.Add(this.Name10);
@@ -332,5 +344,6 @@
 		private Label Name6;
 		private Label Name7;
 		private Label Name1;
+		public Label FeedbackLbl;
 	}
 }
