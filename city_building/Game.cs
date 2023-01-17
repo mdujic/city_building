@@ -242,10 +242,11 @@ namespace city_building
 			// calculate number of wonders
 			var NoWonders = int.Parse(NoWondersLbl.Text);
 
+			var numSoldiers = int.Parse(NoSoldiersLbl.Text);
 			// total number of workers is 5 * number of houses + 20 * number of buildings
-			var workersTotal = 5 * NoHouses + 20 * NoBuildings;
-
-			if (seconds % 10 == 0 && workersAvailable < workersTotal - workersWorking)
+			var workersTotal = 5 * NoHouses + 20 * NoBuildings - numSoldiers;
+			
+			if (seconds % 10 == 0 && workersAvailable < workersTotal - workersWorking - numSoldiers)
 			{
 				workersAvailable++;
 			}
@@ -585,208 +586,51 @@ namespace city_building
 
 		private void GoldBtn_Click(object sender, EventArgs e)
 		{
-			// dialog box pops out with options to buy/sell resources
+			// open market dialog box
+			Market market = new Market(this);
+			market.ShowDialog();
+		}
 
-			// get number of each resource
-			int wood = Convert.ToInt32(WoodCountLbl.Text);
-			int stone = Convert.ToInt32(StoneCountLbl.Text);
-			int iron = Convert.ToInt32(IronCountLbl.Text);
-			int gold = Convert.ToInt32(GoldCountLbl.Text);
+		// function get_wood
+		public string get_wood()
+		{
+			return WoodCountLbl.Text;
+		}
 
-			// create dialog box
-			Form dialogBox = new Form();
-			dialogBox.Text = "Market";
-			dialogBox.Size = new Size(300, 600);
-			dialogBox.StartPosition = FormStartPosition.CenterScreen;
-			dialogBox.FormBorderStyle = FormBorderStyle.FixedDialog;
-			dialogBox.MaximizeBox = false;
-			dialogBox.MinimizeBox = false;
-			dialogBox.ShowIcon = false;
-			dialogBox.ShowInTaskbar = false;
-			dialogBox.TopMost = true;
-
-			// create labels
-			Label woodLbl = new Label();
-			woodLbl.Text = "Wood: " + wood.ToString();
-			woodLbl.Location = new Point(10, 10);
-			woodLbl.Size = new Size(100, 20);
-			dialogBox.Controls.Add(woodLbl);
-
-			Label stoneLbl = new Label();
-			stoneLbl.Text = "Stone: " + stone.ToString();
-			stoneLbl.Location = new Point(10, 40);
-			stoneLbl.Size = new Size(100, 20);
-			dialogBox.Controls.Add(stoneLbl);
-
-			Label ironLbl = new Label();
-			ironLbl.Text = "Iron: " + iron.ToString();
-			ironLbl.Location = new Point(10, 70);
-			ironLbl.Size = new Size(100, 20);
-			dialogBox.Controls.Add(ironLbl);
-
-			Label goldLbl = new Label();
-			goldLbl.Text = "Gold: " + gold.ToString();
-			goldLbl.Location = new Point(10, 100);
-			goldLbl.Size = new Size(100, 20);
-			dialogBox.Controls.Add(goldLbl);
-
-			// create buttons
-			Button buyWoodBtn = new Button();
-			buyWoodBtn.Text = "Buy Wood";
-			buyWoodBtn.Location = new Point(10, 130);
-			buyWoodBtn.Size = new Size(100, 20);
-			buyWoodBtn.Click += (s, e) =>
-			{
-				// check if there is enough gold
-				if (gold >= 10)
-				{
-					// update labels
-					wood += 10;
-					gold -= 10;
-					woodLbl.Text = "Wood: " + wood.ToString();
-					goldLbl.Text = "Gold: " + gold.ToString();
-				}
-				else
-				{
-					MessageBox.Show("Not enough gold!");
-				}
-			};
-			dialogBox.Controls.Add(buyWoodBtn);
-
-			Button buyStoneBtn = new Button();
-			buyStoneBtn.Text = "Buy Stone";
-			buyStoneBtn.Location = new Point(10, 160);
-			buyStoneBtn.Size = new Size(100, 20);
-			buyStoneBtn.Click += (s, e) =>
-			{
-				// check if there is enough gold
-				if (gold >= 20)
-				{
-					// update labels
-					stone += 10;
-					gold -= 20;
-					stoneLbl.Text = "Stone: " + stone.ToString();
-					goldLbl.Text = "Gold: " + gold.ToString();
-				}
-				else
-				{
-					MessageBox.Show("Not enough gold!");
-				}
-			};
-
-			dialogBox.Controls.Add(buyStoneBtn);
-
-			Button buyIronBtn = new Button();
-			buyIronBtn.Text = "Buy Iron";
-			buyIronBtn.Location = new Point(10, 190);
-			buyIronBtn.Size = new Size(100, 20);
-
-			buyIronBtn.Click += (s, e) =>
-			{
-				// check if there is enough gold
-				if (gold >= 30)
-				{
-					// update labels
-					iron += 10;
-					gold -= 30;
-					ironLbl.Text = "Iron: " + iron.ToString();
-					goldLbl.Text = "Gold: " + gold.ToString();
-				}
-				else
-				{
-					MessageBox.Show("Not enough gold!");
-				}
-			};
-
-			dialogBox.Controls.Add(buyIronBtn);
-
-			Button sellWoodBtn = new Button();
-			sellWoodBtn.Text = "Sell Wood";
-			sellWoodBtn.Location = new Point(10, 220);
-			sellWoodBtn.Size = new Size(100, 20);
-
-			sellWoodBtn.Click += (s, e) =>
-			{
-				// check if there is enough wood
-				if (wood >= 10)
-				{
-					// update labels
-					wood -= 10;
-					gold += 10;
-					woodLbl.Text = "Wood: " + wood.ToString();
-					goldLbl.Text = "Gold: " + gold.ToString();
-				}
-				else
-				{
-					MessageBox.Show("Not enough wood!");
-				}
-			};
-
-			dialogBox.Controls.Add(sellWoodBtn);
-
-			Button sellStoneBtn = new Button();
-			sellStoneBtn.Text = "Sell Stone";
-			sellStoneBtn.Location = new Point(10, 250);
-			sellStoneBtn.Size = new Size(100, 20);
-
-			sellStoneBtn.Click += (s, e) =>
-			{
-				// check if there is enough stone
-				if (stone >= 10)
-				{
-					// update labels
-					stone -= 10;
-					gold += 20;
-					stoneLbl.Text = "Stone: " + stone.ToString();
-					goldLbl.Text = "Gold: " + gold.ToString();
-				}
-				else
-				{
-					MessageBox.Show("Not enough stone!");
-				}
-			};
-
-			dialogBox.Controls.Add(sellStoneBtn);
-
-			Button sellIronBtn = new Button();
-			sellIronBtn.Text = "Sell Iron";
-			sellIronBtn.Location = new Point(10, 280);
-			sellIronBtn.Size = new Size(100, 20);
-
-			sellIronBtn.Click += (s, e) =>
-			{
-				// check if there is enough iron
-				if (iron >= 10)
-				{
-					// update labels
-					iron -= 10;
-					gold += 30;
-					ironLbl.Text = "Iron: " + iron.ToString();
-					goldLbl.Text = "Gold: " + gold.ToString();
-				}
-				else
-				{
-					MessageBox.Show("Not enough iron!");
-				}
-			};
-
-			dialogBox.Controls.Add(sellIronBtn);
-
-			// create close button
-			Button closeBtn = new Button();
-			closeBtn.Text = "Close";
-			closeBtn.Location = new Point(10, 310);
-			closeBtn.Size = new Size(100, 20);
-			closeBtn.Click += (s, e) =>
-			{
-				// close dialog box
-				dialogBox.Close();
-			};
-			dialogBox.Controls.Add(closeBtn);
-
-			// show dialog box
-			dialogBox.ShowDialog();
-
+		// function get_stone
+		public string get_stone()
+		{
+			return StoneCountLbl.Text;
+		}
+		
+		public string get_iron()
+		{
+			return IronCountLbl.Text;
+		}
+		
+		public string get_gold()
+		{
+			return GoldCountLbl.Text;
+		}
+		
+		public void set_wood(string wood)
+		{
+			WoodCountLbl.Text = wood;
+		}
+		
+		public void set_stone(string stone)
+		{
+			StoneCountLbl.Text = stone;
+		}
+		
+		public void set_iron(string iron)
+		{
+			IronCountLbl.Text = iron;
+		}
+		
+		public void set_gold(string gold)
+		{
+			GoldCountLbl.Text = gold;
 		}
 	}
 }
