@@ -77,25 +77,5 @@ namespace city_building
 		
 		}
 
-		private void LoadingTimer_Tick(object sender, EventArgs e)
-		{
-			time++;
-
-			switch (time % 4)
-			{
-				case 0:
-					LoadingLbl.Text = "Loading.";
-					break;
-				case 1:
-					LoadingLbl.Text = "Loading..";
-					break;
-				case 2:
-					LoadingLbl.Text = "Loading...";
-					break;
-				case 3:
-					LoadingLbl.Text = "Loading....";
-					break;
-			}
-		}
 	}
 }

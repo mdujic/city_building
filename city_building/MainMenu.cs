@@ -100,5 +100,13 @@ namespace city_building
 			// open form g
 			g.Show();
 		}
+
+		private void LeaderboardBtn_Click(object sender, EventArgs e)
+		{
+			// show dialog box
+			Leaderboard l = new Leaderboard();
+
+			l.ShowDialog();
+		}
 	}
 }

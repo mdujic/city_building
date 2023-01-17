@@ -28,12 +28,10 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.BulbPicture = new System.Windows.Forms.PictureBox();
 			this.HintLbl = new System.Windows.Forms.Label();
 			this.HintRichTextBox = new System.Windows.Forms.RichTextBox();
 			this.LoadingLbl = new System.Windows.Forms.Label();
-			this.LoadingTimer = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.BulbPicture)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -83,10 +81,6 @@
 			this.LoadingLbl.TabIndex = 3;
 			this.LoadingLbl.Text = "Loading...";
 			// 
-			// LoadingTimer
-			// 
-			this.LoadingTimer.Tick += new System.EventHandler(this.LoadingTimer_Tick);
-			// 
 			// LoadingScreen
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -115,6 +109,5 @@
 		private Label HintLbl;
 		private RichTextBox HintRichTextBox;
 		private Label LoadingLbl;
-		private System.Windows.Forms.Timer LoadingTimer;
 	}
 }

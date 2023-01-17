@@ -353,6 +353,7 @@ namespace city_building
 									break;
 								case "Wonder":
 									NoWondersLbl.Text = (Convert.ToInt32(NoWondersLbl.Text) + 1).ToString();
+									endOfGame();
 									break;
 							}
 						}, seconds, workersNecessary));
@@ -668,6 +669,12 @@ namespace city_building
 					HarvestMine(IronBtn, 15);
 					break;
 			}
+		}
+
+		// this function is called when wonder is built
+		private void endOfGame()
+		{
+			
 		}
 	}
 }
