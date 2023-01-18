@@ -18,9 +18,10 @@ namespace city_building
 		public int velicina; // veličina mape
         public int time = 0;
 		Button lastClicked = null;
+		Wolves wolves = new Wolves();
 
 		// array of pairs of actions and times to execute after each tick
-		public List<Tuple<Action, int, int>> actions = new List<Tuple<Action, int, int>>();
+		public List<Tuple<Action, string, int, int>> actions = new List<Tuple<Action, string, int, int>>();
 		
 		public Game(MainMenu m)
         {	
@@ -55,9 +56,10 @@ namespace city_building
 					biomes[x, y] = perlin.GetBiome(heightMap[x, y], heatMap[x, y]).name;
                 }
 			}
+
 			AddIronNoise(biomes);
 
-			AddMapButtons(biomes);
+			AddMapButtons(biomes); // this takes ages
 		}
 
 		void AddIronNoise(string[,] biomes)
@@ -97,7 +99,6 @@ namespace city_building
             var panel = new TableLayoutPanel();
             panel.RowCount = velicina;
             panel.ColumnCount = velicina;
-            //panel.BackColor = Color.Black;
 
             // postavi jednaku veličinu redova i stupaca
             for (int i = 0; i < velicina; ++i)
@@ -131,9 +132,10 @@ namespace city_building
                             button.BackColor = Color.DarkGray;
                             break;
                     }
-                    //button.Text = heightMap[x, y].ToString();
+                    
                     button.Dock = DockStyle.Fill;
                     button.FlatStyle = FlatStyle.Flat;
+					button.FlatAppearance.BorderColor = Color.Black;
                     button.Margin = new Padding(0);
 
 					// click event for the button
@@ -143,10 +145,8 @@ namespace city_building
 						var b = (Button)sender;
 						lastClicked = b;
 					};
-					
 
 					panel.Controls.Add(button, y, x);
-
                 }
             }
 
@@ -168,7 +168,6 @@ namespace city_building
 				// increment NoHousesLbl
 				NoHousesLbl.Text = (int.Parse(NoHousesLbl.Text) + 1).ToString();
 			}
-
 
 			panel.Dock = DockStyle.Fill;
             this.Controls.Add(panel);
@@ -208,28 +207,47 @@ namespace city_building
 			// update label
 			TimeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
 
-			var newActions = new List<Tuple<Action, int, int>>();
+			// check and resolve wolf attack
+			wolves.Resolve(this);
+
+			// Action is the action
+			// first int is the action type
+			// second and third int are action type specific
+			// action types: 0 - workers working, 1 - wolves
+			var newActions = new List<Tuple<Action, string, int, int>>();
 			var workersWorking = 0;
 			// iterate through each element in tickActions
 			foreach (var action in actions)
 			{
-				// extract action and time from the tuple
+				// extract action and action type from the tuple
 				var a = action.Item1;
-				var t = action.Item2;
+				var type = action.Item2;
 
-				if (t == 0)
+				switch (type)
 				{
-					// execute the action
-					a();
-				}
-				else
-				{
-					newActions.Add(new Tuple<Action, int, int>(a, t - 1, action.Item3));
-					workersWorking += action.Item3;
-				}
+					case "worker": // workers working - Item3 is time, Item4 is required workers
+						var time = action.Item3;
+                        if (time == 0)
+                        {
+                            // execute the action
+                            a();
+                        }
+                        else
+                        {
+                            newActions.Add(new Tuple<Action, string, int, int>(a, "worker", time - 1, action.Item4));
+                            workersWorking += action.Item4;
+                        }
+						break;
+					case "wolves": // wolves attack resolution
+						// each tick the wolves decide whether they are moving or attacking
+                }
+
+				
 			}
 			actions = newActions;
 			
+			// update game info
+
 			var workersAvailable = int.Parse(NoWorkersLbl.Text.Split('/')[0]);
 			
 			// calculate total number of houses from NoHousesLbl
@@ -298,7 +316,6 @@ namespace city_building
 					// check if there is enough available workers
 					if (workersAvailable >= workersNecessary)
 					{
-						
 						// subtract resources
 						wood -= resources;
 						stone -= resources;
@@ -322,7 +339,7 @@ namespace city_building
 
 						var b = lastClicked;
 						// add action to tickActions
-						actions.Add(new Tuple<Action, int, int>(() =>
+						actions.Add(new Tuple<Action, string, int, int>(() =>
 						{
 							// get workersAvailable and workersTotal
 							string[] workers = NoWorkersLbl.Text.Split('/');
@@ -355,7 +372,7 @@ namespace city_building
 									NoWondersLbl.Text = (Convert.ToInt32(NoWondersLbl.Text) + 1).ToString();
 									break;
 							}
-						}, seconds, workersNecessary));
+						}, "worker", seconds, workersNecessary));
 
 					}
 					else
@@ -490,7 +507,7 @@ namespace city_building
 						// update labels
 						NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 						var b = lastClicked;
-						actions.Add(new Tuple<Action, int, int>(() =>
+						actions.Add(new Tuple<Action, string, int, int>(() =>
 						{
 							// get workersAvailable and workersTotal
 							// get number of workers in format available/total
@@ -540,7 +557,7 @@ namespace city_building
 							// change button color back to before
 							b.BackgroundImage = null;
 							b.BackColor = BackColorBefore;
-						}, seconds, 1));
+						}, "worker", seconds, 1));
 					}
 					else
 					{
