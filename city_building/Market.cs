@@ -13,131 +13,144 @@ namespace city_building
 	public partial class Market : Form
 	{
 		Game g;
+
 		public Market(Game _g)
 		{
 			g = _g;
 			InitializeComponent();
 
-			// set all amounts to those from Game
-			WoodAmountMarket.Text = g.get_wood();
-			StoneAmountMarket.Text = g.get_stone();
-			IronAmountMarket.Text = g.get_iron();
-			GoldAmountMarket.Text = g.get_gold();
-		}
+			g.GameTimer.Tick += (sender, e) => { UpdateLabels(); };
 
-		private void BuyWoodBtn_Click(object sender, EventArgs e)
+			// set all amounts to those from Game
+			UpdateLabels();
+		}
+       
+		public void UpdateLabels()
 		{
-			int gold = Convert.ToInt32(g.get_gold());
-			// if player has enough gold
-			if (gold >= 10)
+            WoodAmountMarket.Text = g.map.wood.ToString();
+            StoneAmountMarket.Text = g.map.stone.ToString();
+            IronAmountMarket.Text = g.map.iron.ToString();
+            GoldAmountMarket.Text = g.map.gold.ToString();
+        }
+
+        private void BuyWoodBtn_Click(object sender, EventArgs e)
+		{
+            // if player has enough gold
+            if (g.map.gold >= 10)
 			{
 				// subtract 10 gold
-				g.set_gold((gold - 10).ToString());
-
+				g.map.gold -= 10;
 
 				// add 10 wood
-				int wood = Convert.ToInt32(g.get_wood());
-				g.set_wood((wood + 10).ToString());
+				g.map.wood += 10;
 
 				// update amounts
-				WoodAmountMarket.Text = g.get_wood();
-				GoldAmountMarket.Text = g.get_gold();
-			}
+				WoodAmountMarket.Text = g.map.wood.ToString();
+				GoldAmountMarket.Text = g.map.gold.ToString();
+				
+                g.set_wood(g.map.wood.ToString());
+                g.set_gold(g.map.gold.ToString());
+            }
 		}
 
 		private void BuyStoneBtn_Click(object sender, EventArgs e)
 		{
-			int gold = Convert.ToInt32(g.get_gold());
-			// if player has enough gold
-			if (gold >= 20)
+            // if player has enough gold
+            if (g.map.gold >= 20)
 			{
-				// subtract 10 gold
-				g.set_gold((gold - 10).ToString());
+                // subtract 20 gold
+                g.map.gold -= 20;
 
-				// add 10 stone
-				int stone = Convert.ToInt32(g.get_stone());
-				g.set_stone((stone + 10).ToString());
+                // add 10 stone
+                g.map.stone += 10;
 
 				// update amounts
-				StoneAmountMarket.Text = g.get_stone();
-				GoldAmountMarket.Text = g.get_gold();
+				StoneAmountMarket.Text = g.map.stone.ToString();
+				GoldAmountMarket.Text = g.map.gold.ToString();
+
+				g.set_stone(g.map.stone.ToString());
+				g.set_gold(g.map.gold.ToString());
 			}
 		}
 
 		private void BuyIronBtn_Click(object sender, EventArgs e)
 		{
-			int gold = Convert.ToInt32(g.get_gold());
-			// if player has enough gold
-			if (gold >= 30)
+            // if player has enough gold
+            if (g.map.gold >= 30)
 			{
-				// subtract 10 gold
-				g.set_gold((gold - 10).ToString());
+                // subtract 30 gold
+                g.map.gold -= 30;
 
-				// add 10 iron
-				int iron = Convert.ToInt32(g.get_iron());
-				g.set_iron((iron + 10).ToString());
+                // add 10 iron
+                g.map.iron += 10;
 
 				// update amounts
-				IronAmountMarket.Text = g.get_iron();
-				GoldAmountMarket.Text = g.get_gold();
+				IronAmountMarket.Text = g.map.iron.ToString();
+				GoldAmountMarket.Text = g.map.gold.ToString();
+
+				g.set_iron(g.map.iron.ToString());
+				g.set_gold(g.map.gold.ToString());
 			}
 		}
 
 		private void SellWoodBtn_Click(object sender, EventArgs e)
 		{
-			int wood = Convert.ToInt32(g.get_wood());
-			// if player has enough wood
-			if (wood >= 10)
+            // if player has enough wood
+            if (g.map.wood >= 10)
 			{
 				// subtract 10 wood
-				g.set_wood((wood - 10).ToString());
+				g.map.wood -= 10;
 
 				// add 8 gold
-				int gold = Convert.ToInt32(g.get_gold());
-				g.set_gold((gold + 8).ToString());
+				g.map.gold += 8;
 
 				// update amounts
-				WoodAmountMarket.Text = g.get_wood();
-				GoldAmountMarket.Text = g.get_gold();
+				WoodAmountMarket.Text = g.map.wood.ToString();
+				GoldAmountMarket.Text = g.map.gold.ToString();
+
+				g.set_wood(g.map.wood.ToString());
+				g.set_gold(g.map.gold.ToString());
 			}
 		}
 
 		private void SellStoneBtn_Click(object sender, EventArgs e)
 		{
-			int stone = Convert.ToInt32(g.get_stone());
-			// if player has enough stone
-			if (stone >= 10)
+            // if player has enough stone
+            if (g.map.stone >= 10)
 			{
 				// subtract 10 stone
-				g.set_stone((stone - 10).ToString());
+				g.map.stone -= 10;
 
-				// add 16 gold
-				int gold = Convert.ToInt32(g.get_gold());
-				g.set_gold((gold + 16).ToString());
+                // add 16 gold
+                g.map.gold += 16;
 
 				// update amounts
-				StoneAmountMarket.Text = g.get_stone();
-				GoldAmountMarket.Text = g.get_gold();
-			}
+				StoneAmountMarket.Text = g.map.stone.ToString();
+				GoldAmountMarket.Text = g.map.gold.ToString();
+
+				g.set_stone(g.map.stone.ToString());
+                g.set_gold(g.map.gold.ToString());
+            }
 		}
 
 		private void SellIronBtn_Click(object sender, EventArgs e)
 		{
-			int iron = Convert.ToInt32(g.get_iron());
-			// if player has enough iron
-			if (iron >= 10)
+            // if player has enough iron
+            if (g.map.iron >= 10)
 			{
 				// subtract 10 iron
-				g.set_iron((iron - 10).ToString());
+				g.map.iron -= 10;
 
-				// add 24 gold
-				int gold = Convert.ToInt32(g.get_gold());
-				g.set_gold((gold + 24).ToString());
+                // add 24 gold	
+                g.map.gold += 24;
 
 				// update amounts
-				IronAmountMarket.Text = g.get_iron();
-				GoldAmountMarket.Text = g.get_gold();
-			}
+				IronAmountMarket.Text = g.map.iron.ToString();
+				GoldAmountMarket.Text = g.map.gold.ToString();
+
+				g.set_iron(g.map.iron.ToString());
+                g.set_gold(g.map.gold.ToString());
+            }
 		}
 	}
 }
