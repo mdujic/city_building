@@ -73,6 +73,7 @@
 			this.LeaderboardBtn.TabIndex = 1;
 			this.LeaderboardBtn.Text = "Leaderboard";
 			this.LeaderboardBtn.UseVisualStyleBackColor = true;
+			this.LeaderboardBtn.Click += new System.EventHandler(this.LeaderboardBtn_Click);
 			this.LeaderboardBtn.MouseLeave += new System.EventHandler(this.LeaderboardBtn_MouseLeave);
 			this.LeaderboardBtn.MouseHover += new System.EventHandler(this.LeaderboardBtn_MouseHover);
 			// 
