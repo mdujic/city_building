@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace city_building
 {
@@ -59,13 +60,124 @@ namespace city_building
             workersAvailable = 6;
             maxPeople = 10;
             soldiers = 0;
-            workersWorking = 0;
             workersTotal = 10;
 
             wood = 0;
             gold = 0;
             iron = 0;
             stone = 0;
+        }
+
+        public void KillSoldiers(int wolves)
+        {
+            int count = 0;
+            foreach (var building in buildingInfo)
+            {
+                var val = building.Value;
+                int remaining = wolves - count;
+                // if house had people outside of it
+                if (val[2] < val[1])
+                {
+                    if (remaining <= val[1] - val[2])
+                    {
+                        val[1] -= remaining;
+                        break;
+                    }
+                    else
+                    {
+                        count += val[1] - val[2];
+                        val[1] = val[2];
+                    }
+                }
+            }
+            soldiers -= wolves;
+            workersTotal = maxPeople - soldiers;
+        }
+
+        public List<Tuple<Action, string, int, int>> KillWorkers(int wolves, List<Tuple<Action, string, int, int>> actions)
+        {
+            int count = 0;
+            int remaining;
+
+            // firstly, kill all available workers from homes
+            foreach (var building in buildingInfo)
+            {
+                var val = building.Value;
+                remaining = wolves - count;
+                // if house has available workers inside it
+                if (val[2] > 0)
+                {
+                    if (val[2] >= remaining)
+                    {
+                        val[2] -= remaining;
+                        val[1] -= remaining;
+                        count += remaining;
+                    }
+                    else
+                    {
+                        val[1] -= val[2];
+                        count += val[2];
+                        val[2] = 0;
+                    }
+                }
+                if (count == wolves) break;
+            }
+
+            workersAvailable -= count;
+
+            if(count < wolves)
+            {
+                List<Tuple<Action, string, int, int>> remainingActions = new List<Tuple<Action, string, int, int>>();
+
+                // secondly, kill #remaining workers currently working on an action
+                // all other workings MUST Be working on an action => availableInhabitants = 0 for any building
+
+                // update the buildingInfo, by killing the remaining existentInhabitants
+                foreach (var building in buildingInfo)
+                {
+                    remaining = wolves - count;
+                    var val = building.Value;
+                    if (val[1] > 0)
+                    {
+                        if (val[1] >= remaining)
+                        {
+                            val[1] -= remaining;
+                            count += remaining;
+                        }
+                        else
+                        {
+                            count += val[1];
+                            val[1] = 0;
+                        }
+                    }
+                    if (count == wolves) break;
+                }
+
+                // iterate over all worker actions and kill workers equal
+                // to remaining wolves
+                foreach (var action in actions)
+                {
+                    OvdjeNastaviRad - treba još ova dva komentara dolje riješiti i mislim da je 
+                    to sve vezano za backend vukova
+                    // we will only kill workers that are harvesting - this means that we maybe
+                    // will not kill all people this tick, so we must add the action with the
+                    // remaining wolves to resolve it
+                    if (action.Item2 == "worker" && count < wolves && action.Item4 == 1) 
+                    {
+                        // kill a worker only if the count < wolves
+                        ++count;
+                        // we must resolve the destruction of these actions
+
+                    }
+                    else
+                    {
+                        // all other actions are preserved
+                        remainingActions.Add(action);
+                    }
+                }
+                return remainingActions;
+            }
+            return actions;
         }
 
         public void BuildHouse(TableLayoutPanelCellPosition coord)
@@ -138,7 +250,6 @@ namespace city_building
 
         public void SubtractWorkersForAction(int workersNecessary)
         {
-
             // iterate over buildingInfo and check if availableInhabitants > 0,
             // if so, subtract them until hitting workersNecessary
 
@@ -162,6 +273,7 @@ namespace city_building
                 }
             }
 
+            workersWorking += workersNecessary;
             workersAvailable -= workersNecessary;
         }
 
@@ -189,6 +301,7 @@ namespace city_building
                 }
             }
 
+            workersWorking -= workersFreed;
             workersAvailable += workersFreed;
         }
 

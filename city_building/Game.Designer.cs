@@ -66,6 +66,8 @@
             this.NoBuildingsLbl = new System.Windows.Forms.Label();
             this.NoTowersLbl = new System.Windows.Forms.Label();
             this.NoWondersLbl = new System.Windows.Forms.Label();
+            this.TmpLabel = new System.Windows.Forms.Label();
+            this.TmpLabel2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ReturnBtn
@@ -468,12 +470,32 @@
             this.NoWondersLbl.TabIndex = 36;
             this.NoWondersLbl.Text = "0";
             // 
+            // TmpLabel
+            // 
+            this.TmpLabel.AutoSize = true;
+            this.TmpLabel.Location = new System.Drawing.Point(28, 543);
+            this.TmpLabel.Name = "TmpLabel";
+            this.TmpLabel.Size = new System.Drawing.Size(38, 15);
+            this.TmpLabel.TabIndex = 37;
+            this.TmpLabel.Text = "label1";
+            // 
+            // TmpLabel2
+            // 
+            this.TmpLabel2.AutoSize = true;
+            this.TmpLabel2.Location = new System.Drawing.Point(28, 562);
+            this.TmpLabel2.Name = "TmpLabel2";
+            this.TmpLabel2.Size = new System.Drawing.Size(38, 15);
+            this.TmpLabel2.TabIndex = 38;
+            this.TmpLabel2.Text = "label2";
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(859, 715);
             this.ControlBox = false;
+            this.Controls.Add(this.TmpLabel2);
+            this.Controls.Add(this.TmpLabel);
             this.Controls.Add(this.NoWondersLbl);
             this.Controls.Add(this.NoTowersLbl);
             this.Controls.Add(this.NoBuildingsLbl);
@@ -560,6 +582,8 @@
 		private Label NoBuildingsLbl;
 		private Label NoTowersLbl;
 		private Label NoWondersLbl;
-	}
+        private Label TmpLabel;
+        private Label TmpLabel2;
+    }
 
 }

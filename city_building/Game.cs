@@ -17,11 +17,14 @@ namespace city_building
 		MainMenu _m;
 
         public int time = 0;
-		Wolves wolves = new Wolves(); // Wolves.cs
-		public MapInfo map;				  // MapInfo.cs
+		public MapInfo map;               // MapInfo.cs
 
-		// array of pairs of actions and times to execute after each tick
-		public List<Tuple<Action, string, int, int>> actions = new List<Tuple<Action, string, int, int>>();
+        // wolf info
+        public int nextWave = 60; // 2.5 min
+        public int waveDifficulty = 1;
+
+        // array of pairs of actions and times to execute after each tick
+        public List<Tuple<Action, string, int, int>> actions = new List<Tuple<Action, string, int, int>>();
 
 		public Game(MainMenu m)
         {	
@@ -46,7 +49,7 @@ namespace city_building
 			TimeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
 
 			// check and resolve wolf attack
-			wolves.Resolve(this);
+			ResolveWolves();
 
 			// Action is the action
 			// first int is the action type
@@ -54,17 +57,24 @@ namespace city_building
 			// action types: 0 - workers working, 1 - wolves
 			var newActions = new List<Tuple<Action, string, int, int>>();
 
+			var actionsQueue = new Queue<Tuple<Action, string, int, int>>(actions);
+			int countActions = actionsQueue.Count;
+			int i = 0;
+
 			// iterate through each element in tickActions
-			foreach (var action in actions)
+			while (actionsQueue.Count > 0)
 			{
+				var action = actionsQueue.Dequeue();
+
 				// extract action and action type from the tuple
 				var a = action.Item1;
 				var type = action.Item2;
+				int time;
 
-				switch (type)
+                switch (type)
 				{
 					case "worker": // workers working - Item3 is time, Item4 is required workers
-						var time = action.Item3;
+						time = action.Item3;
                         if (time == 0)
                         {
                             // execute the action
@@ -75,9 +85,42 @@ namespace city_building
                             newActions.Add(new Tuple<Action, string, int, int>(a, "worker", time - 1, action.Item4));
                         }
 						break;
-					//case "wolves": // wolves attack resolution
-						// each tick the wolves decide whether they are moving or attacking
+					case "wolves": // wolves attack resolution - Item3 is time, Item4 is number of wolves
+						if(i >= countActions)
+						{
+                            time = action.Item3;
+                            if (time == 0)
+                            {
+                                int wolves = action.Item4;
+                                int count = 0;
+                                if (map.soldiers > 0)
+                                {
+                                    if (map.soldiers >= wolves)
+                                    {
+                                        map.KillSoldiers(wolves);
+                                    }
+                                    else
+                                    {
+										if(map.workersWorking + map.workersAvailable + map.soldiers <= wolves) GameLost();
+                                        count += map.soldiers;
+                                        map.KillSoldiers(map.soldiers);
+										newActions = map.KillWorkers(wolves - count, newActions);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                newActions.Add(new Tuple<Action, string, int, int>(a, "wolves", time - 1, action.Item4));
+								TmpLabel.Text = time.ToString();
+                            }
+                        }
+						else
+						{
+							actionsQueue.Enqueue(action);
+						}
+						break;
                 }
+				i++;
 			}
 
 			actions = newActions;
@@ -89,6 +132,9 @@ namespace city_building
             // update NoHousesLbl in format workersAvailable/workersTotal
             NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 
+			// update soldier label
+			NoSoldiersLbl.Text = map.soldiers.ToString();
+
 			// each tower produces some amount of gold
 			if (seconds % 5 == 0)
 			{
@@ -96,8 +142,37 @@ namespace city_building
                 GoldCountLbl.Text = map.gold.ToString();
 			}
 		}
+        public void ResolveWolves()
+        {
+            // check if the nextWave should come
+            if (nextWave == 0)
+            {
+                SendWave();
+                nextWave = 60;
+                waveDifficulty++;
+            }
+            else
+            {
+                nextWave--;
+            }
+        }
+        public void SendWave()
+        {
+            // based on waveDifficulty, decide the number of wolves that attack
+            // for each pack of 3 wolves, create an action that is then resolved by
+            // the GameTimer_Tick function
 
-		private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
+            // the first int keeps the time until the attack
+            // the second int keeps the number of wolves that are still alive in the pack
+
+            for (int i = 0; i < waveDifficulty; i++)
+            {
+                actions.Add(new Tuple<Action, string, int, int>(() =>
+                {}, "wolves", 15, 3));
+            }
+        }
+
+        private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
 		{
 			Button lastClicked = map.lastClicked;
 
@@ -505,5 +580,7 @@ namespace city_building
 			leaderboard.ShowDialog();
 
 		}
+
+		private void GameLost() { }
 	}
 }
