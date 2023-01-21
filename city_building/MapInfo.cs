@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace city_building
 {
@@ -55,7 +56,7 @@ namespace city_building
             NoHouses = 2;
             NoBuildings = 0;
             NoTowers = 0;
-            NoWonders= 0;
+            NoWonders = 0;
             workersAvailable = 6;
             maxPeople = 10;
             soldiers = 0;
@@ -66,6 +67,24 @@ namespace city_building
             gold = 0;
             iron = 0;
             stone = 0;
+        }
+
+        public void BuildHouse(TableLayoutPanelCellPosition coord)
+        {
+            NoHouses++;
+            maxPeople += 5;
+            workersTotal += 5;
+
+            buildingInfo[new Tuple<int, int>(coord.Row, coord.Column)] = new int[] { 1, 0, 0 };
+        }
+
+        public void BuildBuilding(TableLayoutPanelCellPosition coord)
+        {
+            NoBuildings++;
+            maxPeople += 20;
+            workersTotal += 20;
+
+            buildingInfo[new Tuple<int, int>(coord.Row, coord.Column)] = new int[] { 2, 0, 0 };
         }
 
         public void AddPeople()

@@ -53,7 +53,6 @@ namespace city_building
 			// second and third int are action type specific
 			// action types: 0 - workers working, 1 - wolves
 			var newActions = new List<Tuple<Action, string, int, int>>();
-			int workersWorking = 0;
 
 			// iterate through each element in tickActions
 			foreach (var action in actions)
@@ -74,7 +73,6 @@ namespace city_building
                         else
                         {
                             newActions.Add(new Tuple<Action, string, int, int>(a, "worker", time - 1, action.Item4));
-                            workersWorking += action.Item4;
                         }
 						break;
 					//case "wolves": // wolves attack resolution
@@ -84,24 +82,17 @@ namespace city_building
 
 			actions = newActions;
 
-			// update game info
-
-			int workersAvailable = map.workersAvailable;
-			int NoTowers = map.NoTowers;
-
 			// decide to add additional people to buildings every 10 seconds
 			if (seconds % 10 == 0)
 				map.AddPeople();
 
-            int workersTotal = map.maxPeople - map.soldiers;
-
             // update NoHousesLbl in format workersAvailable/workersTotal
-            NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+            NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 
 			// each tower produces some amount of gold
 			if (seconds % 5 == 0)
 			{
-                map.gold += 5 * NoTowers;
+                map.gold += 5 * map.NoTowers;
                 GoldCountLbl.Text = map.gold.ToString();
 			}
 		}
@@ -109,14 +100,6 @@ namespace city_building
 		private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
 		{
 			Button lastClicked = map.lastClicked;
-
-			int wood = map.wood;
-			int stone = map.stone;
-			int gold = map.gold;
-			int iron = map.iron;
-
-			int workersAvailable = map.workersAvailable;
-			int workersTotal = map.maxPeople - map.soldiers;
 
 			// if there is no lastClicked button, show message
 			if (lastClicked == null)
@@ -127,26 +110,27 @@ namespace city_building
 			else if (lastClicked.BackColor == Color.LightGreen)
 			{
 				// check if there is enough resources
-				if (wood >= resources && stone >= resources && iron >= resources && gold >= price)
+				if (map.wood >= resources && map.stone >= resources && map.iron >= resources && map.gold >= price)
 				{
 					// check if there is enough available workers
-					if (workersAvailable >= workersNecessary)
+					if (map.workersAvailable >= workersNecessary)
 					{
 						// subtract resources
-						wood -= resources;
-						stone -= resources;
-						iron -= resources;
-						gold -= resources;
+						map.wood -= resources;
+						map.stone -= resources;
+						map.iron -= resources;
+						map.gold -= resources;
 
 						// subtract necessary workers
 						map.SubtractWorkersForAction(workersNecessary);
 
 						// update labels
-						WoodCountLbl.Text = wood.ToString();
-						StoneCountLbl.Text = stone.ToString();
-						IronCountLbl.Text = iron.ToString();
-						GoldCountLbl.Text = gold.ToString();
-						NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+						WoodCountLbl.Text = map.wood.ToString();
+						StoneCountLbl.Text = map.stone.ToString();
+						IronCountLbl.Text = map.iron.ToString();
+						GoldCountLbl.Text = map.gold.ToString();
+
+                        NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 
 						// change button image to construction
 						lastClicked.BackgroundImage = Properties.Resources.construction;
@@ -158,14 +142,11 @@ namespace city_building
 						{
                             // this action triggers when the building is built
 
-                            int workersAvailable = map.workersAvailable;
-                            int workersTotal = map.maxPeople - map.soldiers;
-
 							// add workers that are freed
 							map.AddWorkersForAction(workersNecessary);
 
 							// update labels
-							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+							NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 
 							// change button to image from sender button
 							b.BackgroundImage = sender.BackgroundImage;
@@ -173,24 +154,28 @@ namespace city_building
 							b.BackColor = Color.Transparent;
 
 							// increase number of buildings
-							switch (sender.Tag)
+							var panels = OutsidePanel.Controls.OfType<TableLayoutPanel>();
+							TableLayoutPanelCellPosition coord = new TableLayoutPanelCellPosition();
+							foreach(var panel in panels)
+								coord = panel.GetCellPosition(b);
+
+                            switch (sender.Tag)
 							{
 								case "House":
-									map.NoHouses += 1;
-									map.maxPeople += 5;
-									map.workersTotal+= 5;
+									map.BuildHouse(coord);
 									NoHousesLbl.Text = map.NoHouses.ToString();
 									break;
+
 								case "Building":
-									map.NoBuildings += 1;
-                                    map.maxPeople += 20;
-                                    map.workersTotal += 20;
+                                    map.BuildBuilding(coord);
                                     NoBuildingsLbl.Text = map.NoBuildings.ToString();
 									break;
+
 								case "Tower":
 									map.NoTowers += 1;
 									NoTowersLbl.Text = map.NoTowers.ToString();
 									break;
+
 								case "Wonder":
 									map.NoWonders += 1;
 									NoWondersLbl.Text = map.NoWonders.ToString();
@@ -239,31 +224,27 @@ namespace city_building
 		private void AddSoldierBtn_Click(object sender, EventArgs e)
 		{
             // one soldier needs one worker and 10 gold
-            int workersAvailable = map.workersAvailable;
-            int workersTotal = map.maxPeople - map.soldiers;
-            int iron = map.iron;
-			int gold = map.gold;
 
 			// check if there is enough gold and iron
-			if (gold >= 10 && iron >= 10)
+			if (map.gold >= 10 && map.iron >= 10)
 			{
 				// check if there is enough available workers
-				if (workersAvailable >= 1)
+				if (map.workersAvailable >= 1)
 				{
 					// subtract gold
-					gold -= 10;
+					map.gold -= 10;
 					// subtract iron
-					iron -= 10;
+					map.iron -= 10;
 
 					// mobilize the worker
 					map.MobilizeSoldier();
 
 					// update labels
-					GoldCountLbl.Text = gold.ToString();
-					NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+					GoldCountLbl.Text = map.gold.ToString();
+					NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 
 					// update iron label
-					IronCountLbl.Text = iron.ToString();
+					IronCountLbl.Text = map.iron.ToString();
 
 					NoSoldiersLbl.Text = map.soldiers.ToString();
 				}
@@ -307,15 +288,13 @@ namespace city_building
                         map.SubtractWorkersForAction(1);
 
                         // get the numbers of workers
-                        int workersAvailable = map.workersAvailable;
-                        int workersTotal = map.maxPeople - map.soldiers;
 
                         var BackColorBefore = lastClicked.BackColor;
 						lastClicked.BackgroundImage = Properties.Resources.worker;
 						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
 						
 						// update labels
-						NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+						NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 						var b = lastClicked;
 						actions.Add(new Tuple<Action, string, int, int>(() =>
 						{
@@ -325,8 +304,6 @@ namespace city_building
                             map.AddWorkersForAction(1);
 
                             // get the numbers of workers
-                            int workersAvailable = map.workersAvailable;
-                            int workersTotal = map.maxPeople - map.soldiers;
 
                             // add 10 item of resource from source
                             switch (sender.Name)
@@ -352,9 +329,9 @@ namespace city_building
 									GoldCountLbl.Text = map.gold.ToString();
 									break;
 							}
-							
+
 							// update labels
-							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+							NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 
 							// change button color back to before
 							b.BackgroundImage = null;
@@ -392,22 +369,19 @@ namespace city_building
 			HarvestMine((Button)sender, 15);
 		}
 
-		private void ImmobilizeSoldierBtn_Click(object sender, EventArgs e)
+		private void DemobilizeSoldierBtn_Click(object sender, EventArgs e)
 		{
 			// return soldier back to workers
-			int noSoldiers = map.soldiers;
             
             // check if there is at least one soldier
-            if (noSoldiers > 0)
+            if (map.soldiers > 0)
 			{
                 // demobilize the soldier
                 map.DemobilizeSoldier();
-                int workersTotal = map.maxPeople - map.soldiers;
-                int workersAvailable = map.workersAvailable;
 
                 // update labels
-                NoSoldiersLbl.Text = noSoldiers.ToString();
-				NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+                NoSoldiersLbl.Text = map.soldiers.ToString();
+				NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
 			}
 			else
 			{
@@ -422,7 +396,7 @@ namespace city_building
 			market.ShowDialog();
 		}
 
-		private void Game_KeyPress(object sender, KeyPressEventArgs e)
+        private void Game_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			// MessageBox.Show(e.KeyChar.ToString().ToUpper());
 			switch (e.KeyChar.ToString().ToUpper())
