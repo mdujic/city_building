@@ -34,10 +34,10 @@ namespace city_building
 
             // the first int keeps the number of wolves that are still alive in the pack
             // the second int keeps the location of the wolf pack
-            actions.Add(new Tuple<Action, string, int, int>(() =>
+            /*actions.Add(new Tuple<Action, string, int, int>(() =>
             {
                 // this delta figures out which tile the wolves will attack   
-            }, "wolves", 3, ));
+            }, "wolves", 3, ));*/
         }
     }
 }

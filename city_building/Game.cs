@@ -12,191 +12,29 @@ using System.Windows.Forms.VisualStyles;
 
 namespace city_building
 {
-	public partial class Game : Form
+    public partial class Game : Form
 	{
 		MainMenu _m;
-		public int velicina; // veličina mape
+
         public int time = 0;
-		Button lastClicked = null;
-		Wolves wolves = new Wolves();
+		Wolves wolves = new Wolves(); // Wolves.cs
+		public MapInfo map;				  // MapInfo.cs
 
 		// array of pairs of actions and times to execute after each tick
 		public List<Tuple<Action, string, int, int>> actions = new List<Tuple<Action, string, int, int>>();
-		
+
 		public Game(MainMenu m)
         {	
             InitializeComponent();
             _m = m;
-            velicina = _m.o.GetMapSize();
+            int velicina = _m.o.GetMapSize();
 			LoadingScreen.ShowLoadingScreen();
 			// Generate the map
-			GenerateMap(); //this takes ages
-			LoadingScreen.CloseForm();
+			map = new MapInfo(velicina);
+			map.GenerateMap(OutsidePanel); // MapInfo.cs
+            NoHousesLbl.Text = map.NoHouses.ToString(); // set the starting number of houses to 2
+            LoadingScreen.CloseForm();
         }
-
-        void GenerateMap()
-        {
-			Perlin perlin = new Perlin();
-
-            // height map
-            double[,] heightMap = perlin.PerlinNoiseMap(velicina,
-				perlin.perlinParameters.heightWaves);
-
-			// heat map
-			double[,] heatMap = perlin.PerlinNoiseMap(velicina,
-				perlin.perlinParameters.heatWaves);
-
-			// decide the biomes based on the maps
-			string[,] biomes = new string[velicina, velicina];
-
-			for(int x = 0; x < velicina; ++x)
-			{
-				for (int y = 0; y < velicina; ++y)
-				{
-					biomes[x, y] = perlin.GetBiome(heightMap[x, y], heatMap[x, y]).name;
-                }
-			}
-
-			AddIronNoise(biomes);
-
-			AddMapButtons(biomes); // this takes ages
-		}
-
-		void AddIronNoise(string[,] biomes)
-		{
-            // add some noise for iron ore
-            // # iron = 2% of all grassland tiles and 15% of all edge mountains tiles
-
-            var random = new Random();
-
-            for (int x = 0; x < velicina; ++x)
-            {
-                for (int y = 0; y < velicina; ++y)
-                {
-                    if (biomes[x, y] == "polje")
-                    {
-                        if (random.NextDouble() > 0.98) biomes[x, y] = "željezo";
-                    }
-                    if (biomes[x, y] == "stijena")
-                    {
-                        bool dobar = false;
-                        if (x > 0 && (biomes[x - 1, y] == "šuma" || biomes[x - 1, y] == "polje"))
-                            dobar = true;
-                        else if (x < velicina - 1 && (biomes[x + 1, y] == "šuma" || biomes[x + 1, y] == "polje"))
-                            dobar = true;
-                        else if (y < velicina - 1 && (biomes[x, y + 1] == "šuma" || biomes[x, y + 1] == "polje"))
-                            dobar = true;
-                        else if (y > 0 && (biomes[x, y - 1] == "šuma" || biomes[x, y - 1] == "polje"))
-                            dobar = true;
-                        if (dobar && random.NextDouble() > 0.85) biomes[x, y] = "željezo";
-                    }
-                }
-            }
-        }
-
-        void AddMapButtons(string[,] biomes)
-        {
-            var panel = new TableLayoutPanel();
-            panel.RowCount = velicina;
-            panel.ColumnCount = velicina;
-
-            // postavi jednaku veličinu redova i stupaca
-            for (int i = 0; i < velicina; ++i)
-            {
-                var postotak = 100d / velicina;
-                panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, (float)postotak));
-                panel.RowStyles.Add(new RowStyle(SizeType.Percent, (float)postotak));
-            }
-			
-            // add the buttons to the panel
-            for (int x = 0; x < velicina; ++x)
-            {
-                for (int y = 0; y < velicina; ++y)
-                {
-                    var button = new Button();
-                    switch (biomes[x, y])
-                    {
-                        case "voda":
-                            button.BackColor = Color.LightBlue;
-                            break;
-                        case "polje":
-                            button.BackColor = Color.LightGreen;
-                            break;
-                        case "šuma":
-                            button.BackColor = Color.DarkGreen;
-                            break;
-                        case "stijena":
-                            button.BackColor = Color.LightGray;
-                            break;
-                        case "željezo":
-                            button.BackColor = Color.DarkGray;
-                            break;
-                    }
-                    
-                    button.Dock = DockStyle.Fill;
-                    button.FlatStyle = FlatStyle.Flat;
-					button.FlatAppearance.BorderColor = Color.Black;
-                    button.Margin = new Padding(0);
-
-					// click event for the button
-					button.Click += (sender, e) =>
-					{
-						// remember lastClicked button
-						var b = (Button)sender;
-						lastClicked = b;
-					};
-
-					panel.Controls.Add(button, y, x);
-                }
-            }
-
-			// choose 2 random buttons from panel.Controls which have color LightGreen
-			// set their BackgroundImage to Properties.Resources.house
-			// and set BackColor to Color.Transparent
-			for (int i = 0; i < 2; ++i)
-			{
-				var random = new Random();
-				var button = (Button)panel.Controls[random.Next(0, panel.Controls.Count)];
-				while (button.BackColor != Color.LightGreen)
-				{
-					button = (Button)panel.Controls[random.Next(0, panel.Controls.Count)];
-				}
-				button.BackgroundImage = Properties.Resources.house;
-				button.BackgroundImageLayout = ImageLayout.Zoom;
-				button.BackColor = Color.Transparent;
-
-				// increment NoHousesLbl
-				NoHousesLbl.Text = (int.Parse(NoHousesLbl.Text) + 1).ToString();
-			}
-
-			panel.Dock = DockStyle.Fill;
-            this.Controls.Add(panel);
-            OutsidePanel.Controls.Add(panel);
-        }
-        
-
-        private void ReturnBtn_Click(object sender, EventArgs e)
-		{
-			// close this form
-			this.Close();
-			_m.Show();
-			if (_m.o.SoundBtnText() == "On")
-			{
-				_m.sound.PlayLooping();
-			}
-		}
-
-		private void ReturnBtn_MouseHover(object sender, EventArgs e)
-		{
-			// change color to yellow
-			ReturnBtn.BackColor = Color.Yellow;
-		}
-
-		private void ReturnBtn_MouseLeave(object sender, EventArgs e)
-		{
-			// change color back to original light gray
-			ReturnBtn.BackColor = Color.LightGray;
-		}
 
 		private void GameTimer_Tick(object sender, EventArgs e)
 		{
@@ -215,7 +53,8 @@ namespace city_building
 			// second and third int are action type specific
 			// action types: 0 - workers working, 1 - wolves
 			var newActions = new List<Tuple<Action, string, int, int>>();
-			var workersWorking = 0;
+			int workersWorking = 0;
+
 			// iterate through each element in tickActions
 			foreach (var action in actions)
 			{
@@ -238,69 +77,46 @@ namespace city_building
                             workersWorking += action.Item4;
                         }
 						break;
-					case "wolves": // wolves attack resolution
+					//case "wolves": // wolves attack resolution
 						// each tick the wolves decide whether they are moving or attacking
                 }
-
-				
 			}
+
 			actions = newActions;
-			
+
 			// update game info
 
-			var workersAvailable = int.Parse(NoWorkersLbl.Text.Split('/')[0]);
-			
-			// calculate total number of houses from NoHousesLbl
-			var NoHouses = int.Parse(NoHousesLbl.Text);
-			// calculate number of building from NoBuildingsLbl
-			var NoBuildings = int.Parse(NoBuildingsLbl.Text);
-			// calculate number of towers from NoTowersLbl
-			var NoTowers = int.Parse(NoTowersLbl.Text);
-			// calculate number of wonders
-			var NoWonders = int.Parse(NoWondersLbl.Text);
+			int workersAvailable = map.workersAvailable;
+			int NoTowers = map.NoTowers;
 
-			var numSoldiers = int.Parse(NoSoldiersLbl.Text);
-			// total number of workers is 5 * number of houses + 20 * number of buildings
-			var workersTotal = 5 * NoHouses + 20 * NoBuildings - numSoldiers;
+			// decide to add additional people to buildings every 10 seconds
+			if (seconds % 10 == 0)
+				map.AddPeople();
 
-			bool condition = workersAvailable + NoHouses + 4 * NoBuildings < workersTotal - workersWorking - numSoldiers;
-			if (seconds % 10 == 0 && condition)
-			{
-				workersAvailable += NoHouses + 4 * NoBuildings;
-			}
-			else if(seconds % 10 == 0 && !condition)
-			{
-				workersAvailable = workersTotal - workersWorking - numSoldiers;
-			}
+            int workersTotal = map.maxPeople - map.soldiers;
 
-			// update NoHousesLbl in format workersAvailable/workersTotal
-			NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
+            // update NoHousesLbl in format workersAvailable/workersTotal
+            NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 
 			// each tower produces some amount of gold
 			if (seconds % 5 == 0)
 			{
-				GoldCountLbl.Text = (int.Parse(GoldCountLbl.Text) + 5 * NoTowers).ToString();
+                map.gold += 5 * NoTowers;
+                GoldCountLbl.Text = map.gold.ToString();
 			}
-
 		}
 
 		private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
 		{
-			// get number of each resource (wood, stone, iron)
-			int wood = Convert.ToInt32(WoodCountLbl.Text);
-			int stone = Convert.ToInt32(StoneCountLbl.Text);
-			int iron = Convert.ToInt32(IronCountLbl.Text);
-			int gold = Convert.ToInt32(GoldCountLbl.Text);
+			Button lastClicked = map.lastClicked;
 
-			// get number of workers in format available/total
-			string[] workers = NoWorkersLbl.Text.Split('/');
+			int wood = map.wood;
+			int stone = map.stone;
+			int gold = map.gold;
+			int iron = map.iron;
 
-			// get number of workers available
-			int workersAvailable = Convert.ToInt32(workers[0]);
-
-			// get number of workers total
-			int workersTotal = Convert.ToInt32(workers[1]);
-
+			int workersAvailable = map.workersAvailable;
+			int workersTotal = map.maxPeople - map.soldiers;
 
 			// if there is no lastClicked button, show message
 			if (lastClicked == null)
@@ -322,8 +138,8 @@ namespace city_building
 						iron -= resources;
 						gold -= resources;
 
-						// subtract workers
-						workersAvailable -= workersNecessary;
+						// subtract necessary workers
+						map.SubtractWorkersForAction(workersNecessary);
 
 						// update labels
 						WoodCountLbl.Text = wood.ToString();
@@ -336,17 +152,17 @@ namespace city_building
 						lastClicked.BackgroundImage = Properties.Resources.construction;
 						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
 
-
 						var b = lastClicked;
 						// add action to tickActions
 						actions.Add(new Tuple<Action, string, int, int>(() =>
 						{
-							// get workersAvailable and workersTotal
-							string[] workers = NoWorkersLbl.Text.Split('/');
-							int workersAvailable = Convert.ToInt32(workers[0]);
-							int workersTotal = Convert.ToInt32(workers[1]);
+                            // this action triggers when the building is built
 
-							workersAvailable += workersNecessary;
+                            int workersAvailable = map.workersAvailable;
+                            int workersTotal = map.maxPeople - map.soldiers;
+
+							// add workers that are freed
+							map.AddWorkersForAction(workersNecessary);
 
 							// update labels
 							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
@@ -360,19 +176,27 @@ namespace city_building
 							switch (sender.Tag)
 							{
 								case "House":
-									NoHousesLbl.Text = (Convert.ToInt32(NoHousesLbl.Text) + 1).ToString();
+									map.NoHouses += 1;
+									map.maxPeople += 5;
+									map.workersTotal+= 5;
+									NoHousesLbl.Text = map.NoHouses.ToString();
 									break;
 								case "Building":
-									NoBuildingsLbl.Text = (Convert.ToInt32(NoBuildingsLbl.Text) + 1).ToString();
+									map.NoBuildings += 1;
+                                    map.maxPeople += 20;
+                                    map.workersTotal += 20;
+                                    NoBuildingsLbl.Text = map.NoBuildings.ToString();
 									break;
 								case "Tower":
-									NoTowersLbl.Text = (Convert.ToInt32(NoTowersLbl.Text) + 1).ToString();
+									map.NoTowers += 1;
+									NoTowersLbl.Text = map.NoTowers.ToString();
 									break;
 								case "Wonder":
-									NoWondersLbl.Text = (Convert.ToInt32(NoWondersLbl.Text) + 1).ToString();
-									break;
+									map.NoWonders += 1;
+									NoWondersLbl.Text = map.NoWonders.ToString();
+									break;	
 							}
-						}, "worker", seconds, workersNecessary));
+                        }, "worker", seconds, workersNecessary));
 
 					}
 					else
@@ -414,17 +238,11 @@ namespace city_building
 
 		private void AddSoldierBtn_Click(object sender, EventArgs e)
 		{
-			// one soldier needs one worker and 10 gold
-			// get number of workers in format available/total
-			string[] workers = NoWorkersLbl.Text.Split('/');
-			// get number of workers available
-			int workersAvailable = Convert.ToInt32(workers[0]);
-			// get number of workers total
-			int workersTotal = Convert.ToInt32(workers[1]);
-			// get number of iron
-			int iron = Convert.ToInt32(IronCountLbl.Text);
-			// get number of gold
-			int gold = Convert.ToInt32(GoldCountLbl.Text);
+            // one soldier needs one worker and 10 gold
+            int workersAvailable = map.workersAvailable;
+            int workersTotal = map.maxPeople - map.soldiers;
+            int iron = map.iron;
+			int gold = map.gold;
 
 			// check if there is enough gold and iron
 			if (gold >= 10 && iron >= 10)
@@ -436,9 +254,10 @@ namespace city_building
 					gold -= 10;
 					// subtract iron
 					iron -= 10;
-					// subtract workers
-					workersAvailable -= 1;
-					workersTotal -= 1;
+
+					// mobilize the worker
+					map.MobilizeSoldier();
+
 					// update labels
 					GoldCountLbl.Text = gold.ToString();
 					NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
@@ -446,13 +265,7 @@ namespace city_building
 					// update iron label
 					IronCountLbl.Text = iron.ToString();
 
-					// get number of soldiers in format
-					int soldiers = Convert.ToInt32(NoSoldiersLbl.Text);
-					
-					// add soldier
-					soldiers++;
-					// update label
-					NoSoldiersLbl.Text = soldiers.ToString();
+					NoSoldiersLbl.Text = map.soldiers.ToString();
 				}
 				else
 				{
@@ -469,7 +282,8 @@ namespace city_building
 		// if sender.Tag == "wood", lastClicked.BackColor must be Color.DarkGreen ...
 		private bool ValidateHarvestMine(Button sender)
 		{
-			bool check = sender.Tag == "wood" && lastClicked.BackColor == Color.DarkGreen;
+            Button lastClicked = map.lastClicked;
+            bool check = sender.Tag == "wood" && lastClicked.BackColor == Color.DarkGreen;
 			check = check || sender.Tag == "stone" && lastClicked.BackColor == Color.LightGray;
 			check = check || sender.Tag == "iron" && lastClicked.BackColor == Color.DarkGray;
 
@@ -479,8 +293,9 @@ namespace city_building
 		// function which sends workers to gather resources
 		private void HarvestMine(Button sender, int seconds)
 		{
-			// check if there is at least one worker
-			if (Convert.ToInt32(NoWorkersLbl.Text.Split('/')[0]) > 0)
+            Button lastClicked = map.lastClicked;
+            // check if there is at least one worker
+            if (map.workersAvailable > 0)
 			{
 				// check if there is no lastClicked button
 				if (lastClicked != null)
@@ -488,19 +303,14 @@ namespace city_building
 					// check if clicked button is appropriate to gather resources
 					if (lastClicked.BackColor != Color.Transparent && ValidateHarvestMine(sender) )
 					{
+                        // subtract the worker from the worker pool
+                        map.SubtractWorkersForAction(1);
 
-						// change number of workers
-						// get number of workers in format available/total
-						string[] workers = NoWorkersLbl.Text.Split('/');
-						// get number of workers available
-						int workersAvailable = Convert.ToInt32(workers[0]);
-						// get number of workers total
-						int workersTotal = Convert.ToInt32(workers[1]);
+                        // get the numbers of workers
+                        int workersAvailable = map.workersAvailable;
+                        int workersTotal = map.maxPeople - map.soldiers;
 
-						// set
-						workersAvailable--;
-
-						var BackColorBefore = lastClicked.BackColor;
+                        var BackColorBefore = lastClicked.BackColor;
 						lastClicked.BackgroundImage = Properties.Resources.worker;
 						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
 						
@@ -509,48 +319,40 @@ namespace city_building
 						var b = lastClicked;
 						actions.Add(new Tuple<Action, string, int, int>(() =>
 						{
-							// get workersAvailable and workersTotal
-							// get number of workers in format available/total
-							string[] workers = NoWorkersLbl.Text.Split('/');
-							// get number of workers available
-							int workersAvailable = Convert.ToInt32(workers[0]);
-							// get number of workers total
-							int workersTotal = Convert.ToInt32(workers[1]);
-							
-							// get number of each resource
-							int wood = Convert.ToInt32(WoodCountLbl.Text);
-							int stone = Convert.ToInt32(StoneCountLbl.Text);
-							int iron = Convert.ToInt32(IronCountLbl.Text);
-							int gold = Convert.ToInt32(GoldCountLbl.Text);
-							workersAvailable++;
+							// this function triggers when the worker is done with work
 
+                            // free the worker into the worker pool
+                            map.AddWorkersForAction(1);
 
-							// add 10 item of resource from source
-							switch (sender.Name)
+                            // get the numbers of workers
+                            int workersAvailable = map.workersAvailable;
+                            int workersTotal = map.maxPeople - map.soldiers;
+
+                            // add 10 item of resource from source
+                            switch (sender.Name)
 							{
 								case "WoodBtn":
-									wood += 10;
+									map.wood += 10;
 									// update label WoodCountLbl
-									WoodCountLbl.Text = wood.ToString();
+									WoodCountLbl.Text = map.wood.ToString();
 									break;
 								case "StoneBtn":
-									stone += 10;
+									map.stone += 10;
 									// update label StoneCountLbl
-									StoneCountLbl.Text = stone.ToString();
+									StoneCountLbl.Text = map.stone.ToString();
 									break;
 								case "IronBtn":
-									iron += 10;
+									map.iron += 10;
 									// update label IronCountLbl
-									IronCountLbl.Text = iron.ToString();
+									IronCountLbl.Text = map.iron.ToString();
 									break;
 								case "GoldBtn":
-									gold += 10;
+									map.gold += 10;
 									// update label GoldCountLbl
-									GoldCountLbl.Text = gold.ToString();
+									GoldCountLbl.Text = map.gold.ToString();
 									break;
 							}
 							
-
 							// update labels
 							NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 
@@ -566,7 +368,7 @@ namespace city_building
 				}
 				else
 				{
-					MessageBox.Show("Please select tile first!");
+					MessageBox.Show("Please select a tile first!");
 				}
 			}
 			else
@@ -593,15 +395,19 @@ namespace city_building
 		private void ImmobilizeSoldierBtn_Click(object sender, EventArgs e)
 		{
 			// return soldier back to workers
-			int noSoldiers = Convert.ToInt32(NoSoldiersLbl.Text);
-			int workersAvailable = Convert.ToInt32(NoWorkersLbl.Text.Split('/')[0]);
-			int workersTotal = Convert.ToInt32(NoWorkersLbl.Text.Split('/')[1]);
-			// check if there is at least one soldier
-			if (noSoldiers > 0)
+			int noSoldiers = map.soldiers;
+            
+            // check if there is at least one soldier
+            if (noSoldiers > 0)
 			{
-				// update labels
-				NoSoldiersLbl.Text = (noSoldiers - 1).ToString();
-				NoWorkersLbl.Text = (workersAvailable + 1).ToString() + "/" + (workersTotal + 1).ToString();
+                // demobilize the soldier
+                map.DemobilizeSoldier();
+                int workersTotal = map.maxPeople - map.soldiers;
+                int workersAvailable = map.workersAvailable;
+
+                // update labels
+                NoSoldiersLbl.Text = noSoldiers.ToString();
+				NoWorkersLbl.Text = workersAvailable.ToString() + "/" + workersTotal.ToString();
 			}
 			else
 			{
@@ -614,48 +420,6 @@ namespace city_building
 			// open market dialog box
 			Market market = new Market(this);
 			market.ShowDialog();
-		}
-
-		// function get_wood
-		public string get_wood()
-		{
-			return WoodCountLbl.Text;
-		}
-
-		// function get_stone
-		public string get_stone()
-		{
-			return StoneCountLbl.Text;
-		}
-		
-		public string get_iron()
-		{
-			return IronCountLbl.Text;
-		}
-		
-		public string get_gold()
-		{
-			return GoldCountLbl.Text;
-		}
-		
-		public void set_wood(string wood)
-		{
-			WoodCountLbl.Text = wood;
-		}
-		
-		public void set_stone(string stone)
-		{
-			StoneCountLbl.Text = stone;
-		}
-		
-		public void set_iron(string iron)
-		{
-			IronCountLbl.Text = iron;
-		}
-		
-		public void set_gold(string gold)
-		{
-			GoldCountLbl.Text = gold;
 		}
 
 		private void Game_KeyPress(object sender, KeyPressEventArgs e)
@@ -686,5 +450,47 @@ namespace city_building
 					break;
 			}
 		}
-	}
+        public void set_wood(string wood)
+        {
+            WoodCountLbl.Text = wood;
+        }
+
+        public void set_stone(string stone)
+        {
+            StoneCountLbl.Text = stone;
+        }
+
+        public void set_iron(string iron)
+        {
+            IronCountLbl.Text = iron;
+        }
+
+        public void set_gold(string gold)
+        {
+            GoldCountLbl.Text = gold;
+        }
+
+        private void ReturnBtn_Click(object sender, EventArgs e)
+        {
+            // close this form
+            this.Close();
+            _m.Show();
+            if (_m.o.SoundBtnText() == "On")
+            {
+                _m.sound.PlayLooping();
+            }
+        }
+
+        private void ReturnBtn_MouseHover(object sender, EventArgs e)
+        {
+            // change color to yellow
+            ReturnBtn.BackColor = Color.Yellow;
+        }
+
+        private void ReturnBtn_MouseLeave(object sender, EventArgs e)
+        {
+            // change color back to original light gray
+            ReturnBtn.BackColor = Color.LightGray;
+        }
+    }
 }
