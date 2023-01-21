@@ -29,9 +29,6 @@ namespace city_building
         // update on building a building
         public int maxPeople;           // the maximum possible number of people = NoHouses * 5 + NoBuildings * 20
 
-        // update on death or birth
-        public int existentPeople;      // the sum of all people currently present on the map
-
         // update on beginning or end of action
         public int workersWorking;   // update on death
         public int workersAvailable; // update on birth   
@@ -53,16 +50,18 @@ namespace city_building
             biomes = new string[velicina, velicina];
             buildingInfo = new Dictionary<Tuple<int, int>, int[]>();
             lastClicked = null;
+
             NoHouses = 2;
             NoBuildings = 0;
             NoTowers = 0;
             NoWonders = 0;
+
             workersAvailable = 6;
             maxPeople = 10;
             soldiers = 0;
-            existentPeople = 0;
             workersWorking = 0;
             workersTotal = 10;
+
             wood = 0;
             gold = 0;
             iron = 0;
@@ -99,7 +98,6 @@ namespace city_building
                     val[1]++;
                     val[2]++;
                     workersAvailable++;
-                    existentPeople++;
                 }
             }
         }
@@ -108,6 +106,7 @@ namespace city_building
         {
             soldiers++;
             workersTotal--;
+            workersAvailable--;
             // find an available worker and subtract it from a building
             foreach(var building in buildingInfo)
             {
@@ -124,6 +123,7 @@ namespace city_building
         {
             soldiers--;
             workersTotal++;
+            workersAvailable++;
             // find a building with a vacant spot (availableInhabitants < existentInhabitants)
             foreach (var building in buildingInfo)
             {

@@ -205,22 +205,22 @@ namespace city_building
 
 		private void HouseBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 10, 10, 10, 5);
+			Build((Button)sender, 10, 10, 5, 5);
 		}
 
 		private void BuildingBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 20, 20, 20, 10);
+			Build((Button)sender, 20, 20, 10, 10);
 		}
 
 		private void TowerBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 30, 30, 30, 15);
+			Build((Button)sender, 30, 30, 15, 15);
 		}
 
 		private void WonderBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 1000, 1000, 1000, 1000);
+			Build((Button)sender, 100, 100, 50, 100);
 		}
 
 		private void AddSoldierBtn_Click(object sender, EventArgs e)
@@ -404,16 +404,16 @@ namespace city_building
 			switch (e.KeyChar.ToString().ToUpper())
 			{
 				case "H":
-					Build(HouseBtn, 10, 10, 10, 5);
+					Build(HouseBtn, 10, 10, 5, 5);
 					break;
 				case "B":
-					Build(BuildingBtn, 20, 20, 20, 10);
+					Build(BuildingBtn, 20, 20, 10, 10);
 					break;
 				case "T":
-					Build(TowerBtn, 30, 30, 30, 15);
+					Build(TowerBtn, 30, 30, 15, 15);
 					break;
 				case "J":
-					Build(WonderBtn, 1000, 1000, 1000, 1000);
+					Build(WonderBtn, 100, 100, 50, 100);
 					break;
 				case "W":
 					HarvestMine(WoodBtn, 5);
