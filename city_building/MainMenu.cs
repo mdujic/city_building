@@ -104,7 +104,7 @@ namespace city_building
 		private void LeaderboardBtn_Click(object sender, EventArgs e)
 		{
 			// show dialog box
-			Leaderboard l = new Leaderboard();
+			Leaderboard l = new Leaderboard(this);
 
 			l.ShowDialog();
 		}
