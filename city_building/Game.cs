@@ -17,14 +17,14 @@ namespace city_building
 		MainMenu _m;
 
         public int time = 0;
-		public MapInfo map;               // MapInfo.cs
+		public MapInfo map; // MapInfo.cs
 
         // wolf info
-        public int nextWave = 60; // 2.5 min
+        public int nextWave = 60; // 1 min
         public int waveDifficulty = 1;
 
         // array of pairs of actions and times to execute after each tick
-        public List<Tuple<Action, string, int, int>> actions = new List<Tuple<Action, string, int, int>>();
+        public List<Tuple<Action, string, int, int, Button>> actions = new List<Tuple<Action, string, int, int, Button>>();
 
 		public Game(MainMenu m)
         {	
@@ -55,9 +55,9 @@ namespace city_building
 			// first int is the action type
 			// second and third int are action type specific
 			// action types: 0 - workers working, 1 - wolves
-			var newActions = new List<Tuple<Action, string, int, int>>();
+			var newActions = new List<Tuple<Action, string, int, int, Button>>();
 
-			var actionsQueue = new Queue<Tuple<Action, string, int, int>>(actions);
+			var actionsQueue = new Queue<Tuple<Action, string, int, int, Button>>(actions);
 			int countActions = actionsQueue.Count;
 			int i = 0;
 
@@ -82,36 +82,54 @@ namespace city_building
                         }
                         else
                         {
-                            newActions.Add(new Tuple<Action, string, int, int>(a, "worker", time - 1, action.Item4));
+                            newActions.Add(new Tuple<Action, string, int, int, Button>(a, "worker", time - 1, action.Item4, action.Item5));
                         }
 						break;
 					case "wolves": // wolves attack resolution - Item3 is time, Item4 is number of wolves
 						if(i >= countActions)
 						{
                             time = action.Item3;
+
+							if (time == 14) WolvesIncomingLbl.Visible = true;
                             if (time == 0)
                             {
+                                WolvesIncomingLbl.Visible = false;
+								WolfCountLbl.Text = (3 * waveDifficulty).ToString();
+
                                 int wolves = action.Item4;
                                 int count = 0;
+
+                                if (map.workersWorking + map.workersAvailable + map.soldiers * 3 <= wolves) GameLost();
+
                                 if (map.soldiers > 0)
                                 {
-                                    if (map.soldiers >= wolves)
+                                    if (map.soldiers * 3 >= wolves)
                                     {
-                                        map.KillSoldiers(wolves);
+                                        map.KillSoldiers(wolves / 3);
+										count += wolves;
                                     }
                                     else
                                     {
-										if(map.workersWorking + map.workersAvailable + map.soldiers <= wolves) GameLost();
-                                        count += map.soldiers;
+                                        count += map.soldiers * 3;
                                         map.KillSoldiers(map.soldiers);
-										newActions = map.KillWorkers(wolves - count, newActions);
                                     }
+                                }
+
+								if(count < wolves)
+								{
+                                    var tmp = map.KillWorkers(wolves - count, newActions);
+
+                                    newActions = tmp.Item2;
+                                    if (tmp.Item1 > 0)
+                                        newActions.Add(new Tuple<Action, string, int, int, Button>(a, "wolves", 5, tmp.Item1, action.Item5));
                                 }
                             }
                             else
                             {
-                                newActions.Add(new Tuple<Action, string, int, int>(a, "wolves", time - 1, action.Item4));
-								TmpLabel.Text = time.ToString();
+								if (time % 2 == 0) WarningLbl.Visible = true;
+								else WarningLbl.Visible = false;
+
+                                newActions.Add(new Tuple<Action, string, int, int, Button>(a, "wolves", time - 1, action.Item4, action.Item5));
                             }
                         }
 						else
@@ -125,8 +143,8 @@ namespace city_building
 
 			actions = newActions;
 
-			// decide to add additional people to buildings every 10 seconds
-			if (seconds % 10 == 0)
+            // decide to add additional people to buildings every 10 seconds
+            if (seconds % 10 == 0)
 				map.AddPeople();
 
             // update NoHousesLbl in format workersAvailable/workersTotal
@@ -134,6 +152,8 @@ namespace city_building
 
 			// update soldier label
 			NoSoldiersLbl.Text = map.soldiers.ToString();
+
+			NoWorkersWorkingLbl.Text = map.workersWorking.ToString();
 
 			// each tower produces some amount of gold
 			if (seconds % 5 == 0)
@@ -148,8 +168,8 @@ namespace city_building
             if (nextWave == 0)
             {
                 SendWave();
-                nextWave = 60;
-                waveDifficulty++;
+                nextWave = 59;
+                waveDifficulty *= 2;
             }
             else
             {
@@ -165,11 +185,8 @@ namespace city_building
             // the first int keeps the time until the attack
             // the second int keeps the number of wolves that are still alive in the pack
 
-            for (int i = 0; i < waveDifficulty; i++)
-            {
-                actions.Add(new Tuple<Action, string, int, int>(() =>
-                {}, "wolves", 15, 3));
-            }
+			actions.Add(new Tuple<Action, string, int, int, Button>(() =>
+				{}, "wolves", 14, 3 * waveDifficulty, null));
         }
 
         private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
@@ -206,14 +223,15 @@ namespace city_building
 						GoldCountLbl.Text = map.gold.ToString();
 
                         NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
+                        NoWorkersWorkingLbl.Text = map.workersWorking.ToString();
 
-						// change button image to construction
-						lastClicked.BackgroundImage = Properties.Resources.construction;
+                        // change button image to construction
+                        lastClicked.BackgroundImage = Properties.Resources.construction;
 						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
 
 						var b = lastClicked;
 						// add action to tickActions
-						actions.Add(new Tuple<Action, string, int, int>(() =>
+						actions.Add(new Tuple<Action, string, int, int, Button>(() =>
 						{
                             // this action triggers when the building is built
 
@@ -258,7 +276,7 @@ namespace city_building
 										endOfGame();
 									break;
 							}
-                        }, "worker", seconds, workersNecessary));
+                        }, "worker", seconds, workersNecessary, null));
 
 					}
 					else
@@ -359,7 +377,7 @@ namespace city_building
 				if (lastClicked != null)
 				{
 					// check if clicked button is appropriate to gather resources
-					if (lastClicked.BackColor != Color.Transparent && ValidateHarvestMine(sender) )
+					if (lastClicked.BackgroundImage == null && ValidateHarvestMine(sender) )
 					{
                         // subtract the worker from the worker pool
                         map.SubtractWorkersForAction(1);
@@ -372,10 +390,12 @@ namespace city_building
 						
 						// update labels
 						NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
-						var b = lastClicked;
-						actions.Add(new Tuple<Action, string, int, int>(() =>
+                        NoWorkersWorkingLbl.Text = map.workersWorking.ToString();
+
+                        var b = lastClicked;
+						actions.Add(new Tuple<Action, string, int, int, Button>(() =>
 						{
-							// this function triggers when the worker is done with work
+                            // this function triggers when the worker is done with work
 
                             // free the worker into the worker pool
                             map.AddWorkersForAction(1);
@@ -412,8 +432,7 @@ namespace city_building
 
 							// change button color back to before
 							b.BackgroundImage = null;
-							b.BackColor = BackColorBefore;
-						}, "worker", seconds, 1));
+						}, "worker", seconds, 1, b));
 					}
 					else
 					{

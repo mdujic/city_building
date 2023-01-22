@@ -58,6 +58,7 @@ namespace city_building
             NoWonders = 0;
 
             workersAvailable = 6;
+            workersWorking = 0;
             maxPeople = 10;
             soldiers = 0;
             workersTotal = 10;
@@ -68,13 +69,13 @@ namespace city_building
             stone = 0;
         }
 
-        public void KillSoldiers(int wolves)
+        public void KillSoldiers(int deaths)
         {
             int count = 0;
             foreach (var building in buildingInfo)
             {
                 var val = building.Value;
-                int remaining = wolves - count;
+                int remaining = deaths - count;
                 // if house had people outside of it
                 if (val[2] < val[1])
                 {
@@ -90,11 +91,11 @@ namespace city_building
                     }
                 }
             }
-            soldiers -= wolves;
+            soldiers -= deaths;
             workersTotal = maxPeople - soldiers;
         }
 
-        public List<Tuple<Action, string, int, int>> KillWorkers(int wolves, List<Tuple<Action, string, int, int>> actions)
+        public Tuple<int, List<Tuple<Action, string, int, int, Button>>> KillWorkers(int wolves, List<Tuple<Action, string, int, int, Button>> actions)
         {
             int count = 0;
             int remaining;
@@ -125,40 +126,19 @@ namespace city_building
 
             workersAvailable -= count;
 
-            if(count < wolves)
+            if (count < wolves)
             {
-                List<Tuple<Action, string, int, int>> remainingActions = new List<Tuple<Action, string, int, int>>();
+                List<Tuple<Action, string, int, int, Button>> remainingActions = new List<Tuple<Action, string, int, int, Button>>();
 
                 // secondly, kill #remaining workers currently working on an action
                 // all other workings MUST Be working on an action => availableInhabitants = 0 for any building
 
-                // update the buildingInfo, by killing the remaining existentInhabitants
-                foreach (var building in buildingInfo)
-                {
-                    remaining = wolves - count;
-                    var val = building.Value;
-                    if (val[1] > 0)
-                    {
-                        if (val[1] >= remaining)
-                        {
-                            val[1] -= remaining;
-                            count += remaining;
-                        }
-                        else
-                        {
-                            count += val[1];
-                            val[1] = 0;
-                        }
-                    }
-                    if (count == wolves) break;
-                }
+                int leftover = count; // how many we already killed
 
                 // iterate over all worker actions and kill workers equal
                 // to remaining wolves
                 foreach (var action in actions)
                 {
-                    OvdjeNastaviRad - treba još ova dva komentara dolje riješiti i mislim da je 
-                    to sve vezano za backend vukova
                     // we will only kill workers that are harvesting - this means that we maybe
                     // will not kill all people this tick, so we must add the action with the
                     // remaining wolves to resolve it
@@ -166,8 +146,9 @@ namespace city_building
                     {
                         // kill a worker only if the count < wolves
                         ++count;
-                        // we must resolve the destruction of these actions
 
+                        // we must resolve the destruction of these actions
+                        action.Item5.BackgroundImage = null;
                     }
                     else
                     {
@@ -175,9 +156,35 @@ namespace city_building
                         remainingActions.Add(action);
                     }
                 }
-                return remainingActions;
+
+                // update the buildingInfo, by killing #(count - leftover) existentInhabitants
+                workersWorking -= (count - leftover);
+
+                foreach (var building in buildingInfo)
+                {
+                    var val = building.Value;
+                    remaining = count - leftover;
+                    
+                    if (val[1] > 0)
+                    {
+                        if (val[1] >= remaining)
+                        {
+                            val[1] -= remaining;
+                            leftover += remaining;
+                        }
+                        else
+                        {
+                            leftover += val[1];
+                            val[1] = 0;
+                        }
+                    }
+                    if (count == leftover) break;
+                }
+
+                return new Tuple<int, List<Tuple<Action, string, int, int, Button>>>(wolves - count, remainingActions);
             }
-            return actions;
+
+            return new Tuple<int, List<Tuple<Action, string, int, int, Button>>>(0, actions);
         }
 
         public void BuildHouse(TableLayoutPanelCellPosition coord)
