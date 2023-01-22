@@ -152,5 +152,5 @@ namespace city_building
                 g.set_gold(g.map.gold.ToString());
             }
 		}
-	}
+    }
 }

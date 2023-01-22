@@ -17,11 +17,14 @@ namespace city_building
 		MainMenu _m;
 
         public int time = 0;
-		Wolves wolves = new Wolves(); // Wolves.cs
-		public MapInfo map;				  // MapInfo.cs
+		public MapInfo map; // MapInfo.cs
 
-		// array of pairs of actions and times to execute after each tick
-		public List<Tuple<Action, string, int, int>> actions = new List<Tuple<Action, string, int, int>>();
+        // wolf info
+        public int nextWave = 60; // 1 min
+        public int waveDifficulty = 1;
+
+        // array of pairs of actions and times to execute after each tick
+        public List<Tuple<Action, string, int, int, Button>> actions = new List<Tuple<Action, string, int, int, Button>>();
 
 		public Game(MainMenu m)
         {	
@@ -46,25 +49,32 @@ namespace city_building
 			TimeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
 
 			// check and resolve wolf attack
-			wolves.Resolve(this);
+			ResolveWolves();
 
 			// Action is the action
 			// first int is the action type
 			// second and third int are action type specific
 			// action types: 0 - workers working, 1 - wolves
-			var newActions = new List<Tuple<Action, string, int, int>>();
+			var newActions = new List<Tuple<Action, string, int, int, Button>>();
+
+			var actionsQueue = new Queue<Tuple<Action, string, int, int, Button>>(actions);
+			int countActions = actionsQueue.Count;
+			int i = 0;
 
 			// iterate through each element in tickActions
-			foreach (var action in actions)
+			while (actionsQueue.Count > 0)
 			{
+				var action = actionsQueue.Dequeue();
+
 				// extract action and action type from the tuple
 				var a = action.Item1;
 				var type = action.Item2;
+				int time;
 
-				switch (type)
+                switch (type)
 				{
 					case "worker": // workers working - Item3 is time, Item4 is required workers
-						var time = action.Item3;
+						time = action.Item3;
                         if (time == 0)
                         {
                             // execute the action
@@ -72,22 +82,78 @@ namespace city_building
                         }
                         else
                         {
-                            newActions.Add(new Tuple<Action, string, int, int>(a, "worker", time - 1, action.Item4));
+                            newActions.Add(new Tuple<Action, string, int, int, Button>(a, "worker", time - 1, action.Item4, action.Item5));
                         }
 						break;
-					//case "wolves": // wolves attack resolution
-						// each tick the wolves decide whether they are moving or attacking
+					case "wolves": // wolves attack resolution - Item3 is time, Item4 is number of wolves
+						if(i >= countActions)
+						{
+                            time = action.Item3;
+
+							if (time == 14) WolvesIncomingLbl.Visible = true;
+                            if (time == 0)
+                            {
+                                WolvesIncomingLbl.Visible = false;
+								WolfCountLbl.Text = (3 * waveDifficulty).ToString();
+
+                                int wolves = action.Item4;
+                                int count = 0;
+
+                                if (map.workersWorking + map.workersAvailable + map.soldiers * 3 <= wolves) GameLost();
+
+                                if (map.soldiers > 0)
+                                {
+                                    if (map.soldiers * 3 >= wolves)
+                                    {
+                                        map.KillSoldiers(wolves / 3);
+										count += wolves;
+                                    }
+                                    else
+                                    {
+                                        count += map.soldiers * 3;
+                                        map.KillSoldiers(map.soldiers);
+                                    }
+                                }
+
+								if(count < wolves)
+								{
+                                    var tmp = map.KillWorkers(wolves - count, newActions);
+
+                                    newActions = tmp.Item2;
+                                    if (tmp.Item1 > 0)
+                                        newActions.Add(new Tuple<Action, string, int, int, Button>(a, "wolves", 5, tmp.Item1, action.Item5));
+                                }
+                            }
+                            else
+                            {
+								if (time % 2 == 0) WarningLbl.Visible = true;
+								else WarningLbl.Visible = false;
+
+                                newActions.Add(new Tuple<Action, string, int, int, Button>(a, "wolves", time - 1, action.Item4, action.Item5));
+                            }
+                        }
+						else
+						{
+							actionsQueue.Enqueue(action);
+						}
+						break;
                 }
+				i++;
 			}
 
 			actions = newActions;
 
-			// decide to add additional people to buildings every 10 seconds
-			if (seconds % 10 == 0)
+            // decide to add additional people to buildings every 10 seconds
+            if (seconds % 10 == 0)
 				map.AddPeople();
 
             // update NoHousesLbl in format workersAvailable/workersTotal
             NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
+
+			// update soldier label
+			NoSoldiersLbl.Text = map.soldiers.ToString();
+
+			NoWorkersWorkingLbl.Text = map.workersWorking.ToString();
 
 			// each tower produces some amount of gold
 			if (seconds % 5 == 0)
@@ -96,8 +162,34 @@ namespace city_building
                 GoldCountLbl.Text = map.gold.ToString();
 			}
 		}
+        public void ResolveWolves()
+        {
+            // check if the nextWave should come
+            if (nextWave == 0)
+            {
+                SendWave();
+                nextWave = 59;
+                waveDifficulty *= 2;
+            }
+            else
+            {
+                nextWave--;
+            }
+        }
+        public void SendWave()
+        {
+            // based on waveDifficulty, decide the number of wolves that attack
+            // for each pack of 3 wolves, create an action that is then resolved by
+            // the GameTimer_Tick function
 
-		private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
+            // the first int keeps the time until the attack
+            // the second int keeps the number of wolves that are still alive in the pack
+
+			actions.Add(new Tuple<Action, string, int, int, Button>(() =>
+				{}, "wolves", 14, 3 * waveDifficulty, null));
+        }
+
+        private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
 		{
 			Button lastClicked = map.lastClicked;
 
@@ -131,14 +223,15 @@ namespace city_building
 						GoldCountLbl.Text = map.gold.ToString();
 
                         NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
+                        NoWorkersWorkingLbl.Text = map.workersWorking.ToString();
 
-						// change button image to construction
-						lastClicked.BackgroundImage = Properties.Resources.construction;
+                        // change button image to construction
+                        lastClicked.BackgroundImage = Properties.Resources.construction;
 						lastClicked.BackgroundImageLayout = ImageLayout.Zoom;
 
 						var b = lastClicked;
 						// add action to tickActions
-						actions.Add(new Tuple<Action, string, int, int>(() =>
+						actions.Add(new Tuple<Action, string, int, int, Button>(() =>
 						{
                             // this action triggers when the building is built
 
@@ -183,7 +276,7 @@ namespace city_building
 										endOfGame();
 									break;
 							}
-                        }, "worker", seconds, workersNecessary));
+                        }, "worker", seconds, workersNecessary, null));
 
 					}
 					else
@@ -205,22 +298,22 @@ namespace city_building
 
 		private void HouseBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 10, 10, 10, 5);
+			Build((Button)sender, 10, 10, 5, 5);
 		}
 
 		private void BuildingBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 20, 20, 20, 10);
+			Build((Button)sender, 20, 20, 10, 10);
 		}
 
 		private void TowerBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 30, 30, 30, 15);
+			Build((Button)sender, 30, 30, 15, 15);
 		}
 
 		private void WonderBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 1000, 1000, 1000, 1000);
+			Build((Button)sender, 100, 100, 50, 100);
 		}
 
 		private void AddSoldierBtn_Click(object sender, EventArgs e)
@@ -284,7 +377,7 @@ namespace city_building
 				if (lastClicked != null)
 				{
 					// check if clicked button is appropriate to gather resources
-					if (lastClicked.BackColor != Color.Transparent && ValidateHarvestMine(sender) )
+					if (lastClicked.BackgroundImage == null && ValidateHarvestMine(sender) )
 					{
                         // subtract the worker from the worker pool
                         map.SubtractWorkersForAction(1);
@@ -297,10 +390,12 @@ namespace city_building
 						
 						// update labels
 						NoWorkersLbl.Text = map.workersAvailable.ToString() + "/" + map.workersTotal.ToString();
-						var b = lastClicked;
-						actions.Add(new Tuple<Action, string, int, int>(() =>
+                        NoWorkersWorkingLbl.Text = map.workersWorking.ToString();
+
+                        var b = lastClicked;
+						actions.Add(new Tuple<Action, string, int, int, Button>(() =>
 						{
-							// this function triggers when the worker is done with work
+                            // this function triggers when the worker is done with work
 
                             // free the worker into the worker pool
                             map.AddWorkersForAction(1);
@@ -337,8 +432,7 @@ namespace city_building
 
 							// change button color back to before
 							b.BackgroundImage = null;
-							b.BackColor = BackColorBefore;
-						}, "worker", seconds, 1));
+						}, "worker", seconds, 1, b));
 					}
 					else
 					{
@@ -404,16 +498,16 @@ namespace city_building
 			switch (e.KeyChar.ToString().ToUpper())
 			{
 				case "H":
-					Build(HouseBtn, 10, 10, 10, 5);
+					Build(HouseBtn, 10, 10, 5, 5);
 					break;
 				case "B":
-					Build(BuildingBtn, 20, 20, 20, 10);
+					Build(BuildingBtn, 20, 20, 10, 10);
 					break;
 				case "T":
-					Build(TowerBtn, 30, 30, 30, 15);
+					Build(TowerBtn, 30, 30, 15, 15);
 					break;
 				case "J":
-					Build(WonderBtn, 1000, 1000, 1000, 1000);
+					Build(WonderBtn, 100, 100, 50, 100);
 					break;
 				case "W":
 					HarvestMine(WoodBtn, 5);
@@ -505,5 +599,7 @@ namespace city_building
 			leaderboard.ShowDialog();
 
 		}
+
+		private void GameLost() { }
 	}
 }
