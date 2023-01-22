@@ -18,9 +18,12 @@ namespace city_building
 		{
 			InitializeComponent();
 			_m = m;
-			// open and read file Properties.Resources.Results
-			string[] lines = Properties.Resources.Results.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+			// obtain path to Properties.Resources.Results
+			var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "Resources\\Results.txt");
 
+			// read the file on path
+			var lines = System.IO.File.ReadAllLines(path);
+			
 			// convert to list of ints
 			List<int> scores = new List<int>();
 			foreach (string line in lines)

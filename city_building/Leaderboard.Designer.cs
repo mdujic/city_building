@@ -370,6 +370,6 @@
 		private Label Name7;
 		private Label Name1;
 		public Label FeedbackLbl;
-        private Button button1;
+        public Button button1;
     }
 }

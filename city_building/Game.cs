@@ -315,7 +315,7 @@ namespace city_building
 
 		private void WonderBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 100, 100, 50, 100);
+			Build((Button)sender, 0, 0, 0, 0);
 		}
 
 		private void AddSoldierBtn_Click(object sender, EventArgs e)
@@ -568,9 +568,13 @@ namespace city_building
 		// this function is called when wonder is built
 		private void endOfGame(int time)
 		{
+
+
+			// find path to Properties.Resources.Results
+			var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "Resources\\Results.txt");
 			// append variable time to the end of file Results
 			// open file Results
-			StreamWriter sw = new StreamWriter("Results.txt", true);
+			StreamWriter sw = new StreamWriter(path, append: true);
 			// write time to file
 			sw.WriteLine(time);
 			// close file
@@ -585,19 +589,28 @@ namespace city_building
 			{
 				// find label with name "Name" + i
 				Control namei = leaderboard.Controls.Find("Name" + i, true)[0];
-				if (minutes + ":" + seconds == namei.Text)
+				
+				if (minutes.ToString("00") + ":" + seconds.ToString("00") == namei.Text)
 				{
 					// change color of label to black
 					namei.ForeColor = Color.Black;
 					// also change Text of label FeedbackLbl to "You are in top 10!"
 					leaderboard.FeedbackLbl.Text = "Congrats! You are in top 10!";
+					break;
 				}
 			}
 			if (leaderboard.FeedbackLbl.Text == "")
 			{
 				leaderboard.FeedbackLbl.Text = "Your result is " + minutes + ":" + seconds;
 			}
-            this.Close();
+
+			var e = new EventArgs();
+			// if leaderboard.button1 is clicked, close
+			leaderboard.button1.Click += (leaderboard, e ) =>
+			{
+				this.Close();
+			};
+			
             leaderboard.ShowDialog();
 		}
 
