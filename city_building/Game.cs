@@ -21,7 +21,8 @@ namespace city_building
 
         // wolf info
         public int nextWave = 60; // 1 min
-        public int waveDifficulty = 1;
+        public int waveDifficulty = 0;
+		public int waveSize = 3;
 
         // array of pairs of actions and times to execute after each tick
         public List<Tuple<Action, string, int, int, Button>> actions = new List<Tuple<Action, string, int, int, Button>>();
@@ -41,7 +42,7 @@ namespace city_building
 
 		private void GameTimer_Tick(object sender, EventArgs e)
 		{
-			time++;
+            time++;
 			// convert time to minutes and seconds
 			int minutes = time / 60;
 			int seconds = time % 60;
@@ -94,7 +95,7 @@ namespace city_building
                             if (time == 0)
                             {
                                 WolvesIncomingLbl.Visible = false;
-								WolfCountLbl.Text = (3 * waveDifficulty).ToString();
+								WolfCountLbl.Text = (waveSize).ToString();
 
                                 int wolves = action.Item4;
                                 int count = 0;
@@ -169,7 +170,8 @@ namespace city_building
             {
                 SendWave();
                 nextWave = 59;
-                waveDifficulty *= 2;
+                waveDifficulty++;
+				waveSize += 3 * waveDifficulty;
             }
             else
             {
@@ -186,7 +188,7 @@ namespace city_building
             // the second int keeps the number of wolves that are still alive in the pack
 
 			actions.Add(new Tuple<Action, string, int, int, Button>(() =>
-				{}, "wolves", 14, 3 * waveDifficulty, null));
+				{}, "wolves", 14, waveSize, null));
         }
 
         private void Build(Button sender, int resources, int price, int workersNecessary, int seconds)
@@ -273,7 +275,7 @@ namespace city_building
 									map.NoWonders += 1;
 									NoWondersLbl.Text = map.NoWonders.ToString();
 									if (NoWondersLbl.Text == "1")
-										endOfGame();
+										endOfGame(time);
 									break;
 							}
                         }, "worker", seconds, workersNecessary, null));
@@ -564,7 +566,7 @@ namespace city_building
         }
 
 		// this function is called when wonder is built
-		private void endOfGame()
+		private void endOfGame(int time)
 		{
 			// append variable time to the end of file Results
 			// open file Results
@@ -575,7 +577,7 @@ namespace city_building
 			sw.Close();
 
 			// open leaderboard dialog box
-			Leaderboard leaderboard = new Leaderboard();
+			Leaderboard leaderboard = new Leaderboard(_m);
 			int minutes = time / 60;
 			int seconds = time % 60;
 
@@ -595,11 +597,15 @@ namespace city_building
 			{
 				leaderboard.FeedbackLbl.Text = "Your result is " + minutes + ":" + seconds;
 			}
-
-			leaderboard.ShowDialog();
-
+            this.Close();
+            leaderboard.ShowDialog();
 		}
 
-		private void GameLost() { }
+		private void GameLost() 
+		{
+			var tmp = new GameLost();
+			this.Close();
+			tmp.ShowDialog();
+        }
 	}
 }

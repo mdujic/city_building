@@ -121,7 +121,7 @@
             this.AddSoldierBtn.Size = new System.Drawing.Size(155, 34);
             this.AddSoldierBtn.TabIndex = 3;
             this.AddSoldierBtn.Text = "Add soldier";
-            this.ToolTip.SetToolTip(this.AddSoldierBtn, "Soldier costs 10 gold and requires 10 iron. One soldier can kill 3 wolves.");
+            this.ToolTip.SetToolTip(this.AddSoldierBtn, "Soldier costs 10 gold and requires 10 iron.\r\nOne soldier can kill 3 wolves.");
             this.AddSoldierBtn.UseVisualStyleBackColor = true;
             this.AddSoldierBtn.Click += new System.EventHandler(this.AddSoldierBtn_Click);
             // 
@@ -144,7 +144,6 @@
             this.WorkersAvailableLbl.Size = new System.Drawing.Size(181, 20);
             this.WorkersAvailableLbl.TabIndex = 6;
             this.WorkersAvailableLbl.Text = "Workers available:";
-            this.ToolTip.SetToolTip(this.WorkersAvailableLbl, "Nesto drugo");
             // 
             // NoSoldiersLbl
             // 
@@ -186,8 +185,8 @@
             this.HouseBtn.Size = new System.Drawing.Size(69, 64);
             this.HouseBtn.TabIndex = 10;
             this.HouseBtn.Tag = "House";
-            this.ToolTip.SetToolTip(this.HouseBtn, "Building of a house requires 5 workers, 5 seconds, and 10 of each resource. In ea" +
-        "ch house live 5 people.");
+            this.ToolTip.SetToolTip(this.HouseBtn, "Building a house requires:\r\n    - 5 workers,\r\n    - 5 seconds, and \r\n    - 10 of " +
+        "each resource.\r\nIn each house live 5 people.");
             this.HouseBtn.UseVisualStyleBackColor = true;
             this.HouseBtn.Click += new System.EventHandler(this.HouseBtn_Click);
             // 
@@ -201,8 +200,8 @@
             this.WonderBtn.Size = new System.Drawing.Size(66, 64);
             this.WonderBtn.TabIndex = 11;
             this.WonderBtn.Tag = "Wonder";
-            this.ToolTip.SetToolTip(this.WonderBtn, "Building of a wonder requires 100 workers, 100 seconds, and 100 of each resource." +
-        " When the wonder is built, the game is finished.");
+            this.ToolTip.SetToolTip(this.WonderBtn, "Building a wonder requires:\r\n    - 50 workers,\r\n    - 100 seconds, and\r\n    - 100" +
+        " of each resource.\r\nWhen the wonder is built, the game is finished.\r\n");
             this.WonderBtn.UseVisualStyleBackColor = true;
             this.WonderBtn.Click += new System.EventHandler(this.WonderBtn_Click);
             // 
@@ -216,8 +215,8 @@
             this.TowerBtn.Size = new System.Drawing.Size(67, 64);
             this.TowerBtn.TabIndex = 12;
             this.TowerBtn.Tag = "Tower";
-            this.ToolTip.SetToolTip(this.TowerBtn, "Building of a tower requires 15 workers, 15 seconds, and 30 of each resource. Tow" +
-        "er produces 5 gold each 5 seconds.");
+            this.ToolTip.SetToolTip(this.TowerBtn, "Building a tower requires:\r\n    - 15 workers,\r\n    - 15 seconds, and\r\n    - 30 of" +
+        " each resource.\r\nA Tower produces 5 gold each 5 seconds.");
             this.TowerBtn.UseVisualStyleBackColor = true;
             this.TowerBtn.Click += new System.EventHandler(this.TowerBtn_Click);
             // 
@@ -231,8 +230,8 @@
             this.BuildingBtn.Size = new System.Drawing.Size(66, 64);
             this.BuildingBtn.TabIndex = 13;
             this.BuildingBtn.Tag = "Building";
-            this.ToolTip.SetToolTip(this.BuildingBtn, "Building of a building requires 10 workers, 10 seconds, and 20 of each resource. " +
-        "In each building live 20 people.");
+            this.ToolTip.SetToolTip(this.BuildingBtn, "Building a building requires:\r\n    - 10 workers,\r\n    - 10 seconds, and\r\n    - 20" +
+        " of each resource.\r\nIn each building live 20 people.");
             this.BuildingBtn.UseVisualStyleBackColor = true;
             this.BuildingBtn.Click += new System.EventHandler(this.BuildingBtn_Click);
             // 
@@ -296,7 +295,7 @@
             this.WoodBtn.Size = new System.Drawing.Size(67, 64);
             this.WoodBtn.TabIndex = 19;
             this.WoodBtn.Tag = "wood";
-            this.ToolTip.SetToolTip(this.WoodBtn, "Harvesting wood requires 1 worker and 5 seconds.");
+            this.ToolTip.SetToolTip(this.WoodBtn, "Harvesting wood requires:\r\n    - 1 worker, and\r\n    - 5 seconds.");
             this.WoodBtn.UseVisualStyleBackColor = true;
             this.WoodBtn.Click += new System.EventHandler(this.WoodBtn_Click);
             // 
@@ -310,7 +309,7 @@
             this.StoneBtn.Size = new System.Drawing.Size(65, 64);
             this.StoneBtn.TabIndex = 20;
             this.StoneBtn.Tag = "stone";
-            this.ToolTip.SetToolTip(this.StoneBtn, "Taking out stone requires 1 worker and 10 seconds.");
+            this.ToolTip.SetToolTip(this.StoneBtn, "Taking out stone requires:\r\n    - 1 worker, and\r\n    - 10 seconds.");
             this.StoneBtn.UseVisualStyleBackColor = true;
             this.StoneBtn.Click += new System.EventHandler(this.StoneBtn_Click);
             // 
@@ -324,7 +323,7 @@
             this.IronBtn.Size = new System.Drawing.Size(65, 64);
             this.IronBtn.TabIndex = 21;
             this.IronBtn.Tag = "iron";
-            this.ToolTip.SetToolTip(this.IronBtn, "Mining iron requires 1 worker and 15 seconds.");
+            this.ToolTip.SetToolTip(this.IronBtn, "Mining iron requires:\r\n    - 1 worker, and\r\n    - 15 seconds.");
             this.IronBtn.UseVisualStyleBackColor = true;
             this.IronBtn.Click += new System.EventHandler(this.IronBtn_Click);
             // 
@@ -431,7 +430,8 @@
             this.ImmobilizeSoldierBtn.Size = new System.Drawing.Size(155, 50);
             this.ImmobilizeSoldierBtn.TabIndex = 32;
             this.ImmobilizeSoldierBtn.Text = "Demobilize soldier";
-            this.ToolTip.SetToolTip(this.ImmobilizeSoldierBtn, "Soldier immobilizes back to worker and without returning previously spent gold.");
+            this.ToolTip.SetToolTip(this.ImmobilizeSoldierBtn, "Demobilize the soldier back to a worker,\r\nwithout returning previously spent reso" +
+        "urces.");
             this.ImmobilizeSoldierBtn.UseVisualStyleBackColor = true;
             this.ImmobilizeSoldierBtn.Click += new System.EventHandler(this.DemobilizeSoldierBtn_Click);
             // 
@@ -588,6 +588,7 @@
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Game";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Game";
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Game_KeyPress);
             this.ResumeLayout(false);
