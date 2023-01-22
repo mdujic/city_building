@@ -315,7 +315,7 @@ namespace city_building
 
 		private void WonderBtn_Click(object sender, EventArgs e)
 		{
-			Build((Button)sender, 0, 0, 0, 0);
+			Build((Button)sender, 100, 100, 100, 100);
 		}
 
 		private void AddSoldierBtn_Click(object sender, EventArgs e)
